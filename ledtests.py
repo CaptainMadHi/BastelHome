@@ -10,7 +10,7 @@ from rpi_ws281x import *
 import argparse
 
 # LED strip configuration:
-LED_COUNT      = 60      # Number of LED pixels.
+LED_COUNT      = 60      # Number of LED pixels in use. Change as Necessary.
 LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
 #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
@@ -19,7 +19,7 @@ LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
-#Colors
+####Colors for simple swapping and usage. Add colors with codes as necessary#### 
 green   = Color(255,0,0)
 red = Color(0,255,0)
 blue  = Color(0,0,255)
@@ -27,18 +27,18 @@ blue  = Color(0,0,255)
 yellow = Color(255,255,0)
 purple = Color(0,255,255)
 cyan = Color(255,0,255)
-
 orange = Color(130,255,0)
 
-warm = Color(95, 255, 20)
-weiß = Color(255,255,255)
+warm = Color(95, 255, 20) # Natural light
+white = Color(255,255,255) 
 
 #Global Attributes
 currentBrightness = 1
-##Own made Methods
+currentColor = white # Default Color at Start 
 
-# Select Pure Color
-def incBrightness(strip, brightness):
+####Functions####
+
+def incBrightness(strip, brightness):          #used for setBrightness()
     global currentBrightness
     for j in range(currentBrightness,brightness):
         for i in range(strip.numPixels()):
@@ -46,14 +46,15 @@ def incBrightness(strip, brightness):
         strip.show()
         time.sleep(0.005)
 
-def decBrightness(strip, brightness):
+def decBrightness(strip, brightness):           #used for setBrightness()
     global currentBrightness
     for j in range(currentBrightness,brightness, -1):
         for i in range(strip.numPixels()):
             strip.setBrightness(j)
         strip.show()
         time.sleep(0.005)
-def setBrightness(strip, brightness):
+
+def setBrightness(strip, brightness):           #fades into wanted brightness over short period
     global currentBrightness
     if currentBrightness < brightness:
         incBrightness(strip,brightness)
@@ -65,12 +66,15 @@ def setBrightness(strip, brightness):
         strip.show()
     currentBrightness=brightness
 
-def pure(strip, color):
+def setColor(strip, color):                             #sets LED-Strip color to input color code
     global currentBrightness
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
     setBrightness(strip, currentBrightness)
-# Define functions which animate LEDs in various ways.
+
+    
+####LED Animation Functions####
+#Selfmade#
 def test1(strip, color, wait_ms=50):
     """Flash all LEDs at ONCE"""
     for i in range(strip.numPixels()):
@@ -78,7 +82,7 @@ def test1(strip, color, wait_ms=50):
     strip.show()
     time.sleep(0.5)
 
-##Not own made Methods    
+#Not own made Methods#   
 def colorWipe(strip, color, wait_ms=50):
     """Wipe color across display a pixel at a time."""
     for i in range(strip.numPixels()):
@@ -134,7 +138,8 @@ def theaterChaseRainbow(strip, wait_ms=50):
             time.sleep(wait_ms/1000.0)
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, 0)
-#Demos
+
+####Demo Functions to test Functions####
 def brightnessDemo(strip):
             global green, red, blue, yellow, orange, purple, cyan, warm, weiß
             spectrum = [green, red, blue, yellow, orange, purple, cyan, warm, weiß]
@@ -169,6 +174,7 @@ if __name__ == '__main__':
     try:
         t = 0.5
         while True:
+           
             #print ('Color wipe animations.')
             #colorWipe(strip, Color(255, 0, 0))  # Red wipe
             #colorWipe(strip, Color(0, 255, 0))  # Blue wipe
@@ -179,13 +185,14 @@ if __name__ == '__main__':
             #theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
             #print ('Rainbow animations.')
             #rainbow(strip)
-            rainbowCycle(strip)
+            #rainbowCycle(strip)
             #theaterChaseRainbow(strip)
             #print('Own Test1 animation.')
             #brightnessDemo(strip)
             #pure(strip, warm)
             #time.sleep(4)
             #setBrightness(strip, 255)
+    
     except KeyboardInterrupt:
         if args.clear:
             colorWipe(strip, Color(0,0,0), 10)
