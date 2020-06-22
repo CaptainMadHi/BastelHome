@@ -20,23 +20,23 @@ LED_INVERT     = False   # True to invert the signal (when using NPN transistor 
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
 ####Colors for simple swapping and usage. Add colors with codes as necessary#### 
-green   = (255,0,0)
-red = (0,255,0)
+green   = (0,255,0)
+red = (255,0,0)
 blue  = (0,0,255)
 
 yellow = (255,255,0)
-purple = (0,255,255)
-cyan = (255,0,255)
-orange = (130,255,0)
+purple = (255,0,255)
+cyan = (0,255,255)
+orange = (255,130,0)
 
-warm = (95, 255, 20) # Natural light
+warm = (255, 95, 20) # Natural light
 white = (255,255,255) 
 
 #--Global Attributes--#
 currentBrightness = 255 # Default Brightness at Start
-
-grb = (255,255,255)
-currentColor = grb
+isGRB = true
+rgb = (255,255,255)
+currentColor = rgb
 
 ####Functions####
 def increaseBrightness(stip, amount=1):
@@ -75,26 +75,34 @@ def setBrightness(strip, brightness):           #Überladen, fades into wanted b
     strip.show()
     currentBrightness=brightness
 
-def setColor(strip, grb):                             #sets LED-Strip color to input color code
-    global currentBrightness, currentColor
-    g = grb[0]
-    r = grb[1]
-    b = grb[2]
-    color = Color(g,r,b)
+def setColor(strip, rgb):                             #sets LED-Strip color to input color code
+    global currentBrightness, currentColor, isGRB
+    r = rgb[0]
+    g = rgb[1]
+    b = rgb[2]
+    
+    if isGRB:
+        color = Color(g,r,b)
+    else:
+        color = Color(r,g,b)
     
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
     strip.show()
-    setBrightness(strip, currentBrightness)
-    currentColor=grb
+    #setBrightness(strip, currentBrightness)
+    currentColor=rgb
     #print('Changing color')
     
 def getColor():
     global currentColor
-    g = currentColor[0]
-    r = currentColor[1]
+    r = currentColor[0]
+    g = currentColor[1]
     b = currentColor[2]
-    print ('Current color is GRB(',g,',', r,',', b, ')')
+    
+    if isGRB:
+     print ('Current color is GRB(',g,',', r,',', b, ')')
+    else:
+     print ('Current color is RGB(',r,',', g,',', b, ')')  
     return currentColor
     
 ####LED Animation Functions####
