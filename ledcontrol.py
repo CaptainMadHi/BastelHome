@@ -57,7 +57,7 @@ def decreaseBrightness(stip):
         print ('Min brightness reached')
     strip.show()
 
-def incBrightness(strip, brightness):          #used for setBrightness()
+def incBrightness(strip, brightness):          #used for fadeBrightness()
     global currentBrightness
     for j in range(currentBrightness,brightness):
         for i in range(strip.numPixels()):
@@ -65,7 +65,7 @@ def incBrightness(strip, brightness):          #used for setBrightness()
         strip.show()
         time.sleep(0.005)
 
-def decBrightness(strip, brightness):           #used for setBrightness()
+def decBrightness(strip, brightness):           #used for fadeBrightness()
     global currentBrightness
     for j in range(currentBrightness,brightness, -1):
         for i in range(strip.numPixels()):
@@ -73,7 +73,7 @@ def decBrightness(strip, brightness):           #used for setBrightness()
         strip.show()
         time.sleep(0.005)
 
-def setBrightness(strip, brightness):           #fades into wanted brightness over short period
+def fadeBrightness(strip, brightness):           #fades into wanted brightness over short period
     global currentBrightness
     if currentBrightness < brightness:
         incBrightness(strip,brightness)
