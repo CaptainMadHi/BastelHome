@@ -24,10 +24,10 @@ green   = (0,255,0)
 red = (255,0,0)
 blue  = (0,0,255)
 
-yellow = (255,255,0)
+yellow = (255,150,0)
 purple = (255,0,255)
 cyan = (0,255,255)
-orange = (255,130,0)
+orange = (255,45,0)
 
 warm = (255, 95, 20) # Natural light
 white = (255,255,255) 
