@@ -34,7 +34,7 @@ white = (255,255,255)
 
 #--Global Attributes--#
 currentBrightness = 255 # Default Brightness at Start
-isGRB = true
+isGRB = True
 rgb = (255,255,255)
 currentColor = rgb
 
