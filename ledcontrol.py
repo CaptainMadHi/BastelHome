@@ -6,11 +6,11 @@
 # various animations on a strip of NeoPixels.
 
 import time
-from rpi_ws281x import *
+from neopixel import *
 import argparse
 
 # LED strip configuration:
-LED_COUNT      = 60      # Number of LED pixels in use. Change as Necessary.
+LED_COUNT      = 8      # Number of LED pixels in use. Change as Necessary.
 LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
 #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
@@ -37,65 +37,59 @@ currentBrightness = 1
 currentColor = white # Default Color at Start 
 
 ####Functions####
-def increaseBrightness(stip):
+def increaseBrightness(stip, amount=1):
     global currentBrightness
     
     if currentBrightness < 255:
-        currentBrightness = currentBrightness+0 
+        currentBrightness = currentBrightness+amount
         strip.setBrightness(currentBrightness)
     else:
         print ('Max brightness reached')
     strip.show()
+    time.sleep(0.005)
 
-def decreaseBrightness(stip):
+def decreaseBrightness(stip, amount=1):
     global currentBrightness
     
-    if currentBrightness > 0:
-        currentBrightness = currentBrightness-1
+    if currentBrightness > 10:
+        currentBrightness = currentBrightness-amount
         strip.setBrightness(currentBrightness)
     else:
         print ('Min brightness reached')
     strip.show()
+    time.sleep(0.005)
 
-def incBrightness(strip, brightness):          #used for fadeBrightness()
+def setBrightness(strip, brightness):           #Überladen, fades into wanted brightness over short period. 
     global currentBrightness
-    for j in range(currentBrightness,brightness):
-        for i in range(strip.numPixels()):
-            strip.setBrightness(j)
-        strip.show()
-        time.sleep(0.005)
-
-def decBrightness(strip, brightness):           #used for fadeBrightness()
-    global currentBrightness
-    for j in range(currentBrightness,brightness, -1):
-        for i in range(strip.numPixels()):
-            strip.setBrightness(j)
-        strip.show()
-        time.sleep(0.005)
-
-def fadeBrightness(strip, brightness):           #fades into wanted brightness over short period
-    global currentBrightness
+    
     if currentBrightness < brightness:
-        incBrightness(strip,brightness)
+        for i in range(currentBrightness,brightness):
+            increaseBrightness(strip)
+    
     if currentBrightness > brightness:
-        decBrightness(strip,brightness)
-    else:
-        for i in range(strip.numPixels()):
-            strip.setBrightness(brightness)
-        strip.show()
+        for i in range(currentBrightness,brightness,-1):
+            decreaseBrightness(strip)
+    print('Setting Brightness to ', brightness)
+    strip.show()
     currentBrightness=brightness
 
 def setColor(strip, color):                             #sets LED-Strip color to input color code
     global currentBrightness, currentColor
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
+    strip.show()
     setBrightness(strip, currentBrightness)
     currentColor=color
-
+    print('Changing color')
+    
 def getColor():
     global currentColor
-    print ('Current color is ', currentColor)
-    return currentColor
+    g = currentColor[0]
+    r = currentColor[1]
+    b = currentColor[2]
+    print ('Current color is GRB(',g,',', r,',', b)
+    
+    #return currentColor
     
 ####LED Animation Functions####
 #Selfmade#
@@ -198,7 +192,24 @@ if __name__ == '__main__':
     try:
         t = 0.5
         while True:
-           
+            setColor(strip, white)
+            
+            setBrightness(strip, 255)
+            time.sleep(2)
+            
+            setBrightness(strip, 100)
+            time.sleep(2)
+            
+            setBrightness(strip, 40)
+            time.sleep(2)
+            
+            #print('Going White')
+            setColor(strip, purple)         
+            time.sleep(2)
+            
+           # print('Going Red')
+            setColor(strip, cyan)
+            time.sleep(2)
             #print ('Color wipe animations.')
             #colorWipe(strip, Color(255, 0, 0))  # Red wipe
             #colorWipe(strip, Color(0, 255, 0))  # Blue wipe
@@ -220,4 +231,5 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if args.clear:
             colorWipe(strip, Color(0,0,0), 10)
+
 
