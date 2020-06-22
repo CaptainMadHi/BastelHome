@@ -37,6 +37,23 @@ currentBrightness = 1
 currentColor = white # Default Color at Start 
 
 ####Functions####
+def increaseBrightness(stip):
+    global currentBrightness
+    
+    if currentBrightness < 255:
+        currentBrightness = currentBrightness+0 
+        strip.setBrightness(currentBrightness)
+    else:
+        print ('Max brightness reached')
+
+def decreaseBrightness(stip):
+    global currentBrightness
+    
+    if currentBrightness > 0:
+        currentBrightness = currentBrightness-1
+        strip.setBrightness(currentBrightness)
+    else:
+        print ('Min brightness reached')
 
 def incBrightness(strip, brightness):          #used for setBrightness()
     global currentBrightness
@@ -67,11 +84,16 @@ def setBrightness(strip, brightness):           #fades into wanted brightness ov
     currentBrightness=brightness
 
 def setColor(strip, color):                             #sets LED-Strip color to input color code
-    global currentBrightness
+    global currentBrightness, currentColor
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
     setBrightness(strip, currentBrightness)
+    currentColor=color
 
+def getColor():
+    global currentColor
+    print ('Current color is ', currentColor)
+    return currentColor
     
 ####LED Animation Functions####
 #Selfmade#
