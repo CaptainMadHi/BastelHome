@@ -20,21 +20,23 @@ LED_INVERT     = False   # True to invert the signal (when using NPN transistor 
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
 ####Colors for simple swapping and usage. Add colors with codes as necessary#### 
-green   = Color(255,0,0)
-red = Color(0,255,0)
-blue  = Color(0,0,255)
+green   = (255,0,0)
+red = (0,255,0)
+blue  = (0,0,255)
 
-yellow = Color(255,255,0)
-purple = Color(0,255,255)
-cyan = Color(255,0,255)
-orange = Color(130,255,0)
+yellow = (255,255,0)
+purple = (0,255,255)
+cyan = (255,0,255)
+orange = (130,255,0)
 
-warm = Color(95, 255, 20) # Natural light
-white = Color(255,255,255) 
+warm = (95, 255, 20) # Natural light
+white = (255,255,255) 
 
-#Global Attributes
-currentBrightness = 1
-currentColor = white # Default Color at Start 
+#--Global Attributes--#
+currentBrightness = 255 # Default Brightness at Start
+
+grb = (255,255,255)
+currentColor = grb
 
 ####Functions####
 def increaseBrightness(stip, amount=1):
@@ -73,23 +75,27 @@ def setBrightness(strip, brightness):           #Überladen, fades into wanted b
     strip.show()
     currentBrightness=brightness
 
-def setColor(strip, color):                             #sets LED-Strip color to input color code
+def setColor(strip, grb):                             #sets LED-Strip color to input color code
     global currentBrightness, currentColor
+    g = grb[0]
+    r = grb[1]
+    b = grb[2]
+    color = Color(g,r,b)
+    
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
     strip.show()
     setBrightness(strip, currentBrightness)
-    currentColor=color
-    print('Changing color')
+    currentColor=grb
+    #print('Changing color')
     
 def getColor():
     global currentColor
     g = currentColor[0]
     r = currentColor[1]
     b = currentColor[2]
-    print ('Current color is GRB(',g,',', r,',', b)
-    
-    #return currentColor
+    print ('Current color is GRB(',g,',', r,',', b, ')')
+    return currentColor
     
 ####LED Animation Functions####
 #Selfmade#
@@ -192,44 +198,21 @@ if __name__ == '__main__':
     try:
         t = 0.5
         while True:
-            setColor(strip, white)
-            
-            setBrightness(strip, 255)
+            setColor(strip, yellow)
+            getColor()
             time.sleep(2)
             
-            setBrightness(strip, 100)
+            setColor(strip, red)
+            getColor()
             time.sleep(2)
             
-            setBrightness(strip, 40)
+            setColor(strip, orange)
+            getColor()
             time.sleep(2)
-            
-            #print('Going White')
-            setColor(strip, purple)         
-            time.sleep(2)
-            
-           # print('Going Red')
-            setColor(strip, cyan)
-            time.sleep(2)
-            #print ('Color wipe animations.')
-            #colorWipe(strip, Color(255, 0, 0))  # Red wipe
-            #colorWipe(strip, Color(0, 255, 0))  # Blue wipe
-            #colorWipe(strip, Color(0, 0, 255))  # Green wipe
-            #print ('Theater chase animations.')
-            #theaterChase(strip, Color(127, 127, 127))  # White theater chase
-            #theaterChase(strip, Color(127,   0,   0))  # Red theater chase
-            #theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
-            #print ('Rainbow animations.')
-            #rainbow(strip)
-            #rainbowCycle(strip)
-            #theaterChaseRainbow(strip)
-            #print('Own Test1 animation.')
-            #brightnessDemo(strip)
-            #pure(strip, warm)
-            #time.sleep(4)
-            #setBrightness(strip, 255)
     
     except KeyboardInterrupt:
         if args.clear:
             colorWipe(strip, Color(0,0,0), 10)
+
 
 
