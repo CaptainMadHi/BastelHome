@@ -45,6 +45,7 @@ def increaseBrightness(stip):
         strip.setBrightness(currentBrightness)
     else:
         print ('Max brightness reached')
+    strip.show()
 
 def decreaseBrightness(stip):
     global currentBrightness
@@ -54,6 +55,7 @@ def decreaseBrightness(stip):
         strip.setBrightness(currentBrightness)
     else:
         print ('Min brightness reached')
+    strip.show()
 
 def incBrightness(strip, brightness):          #used for setBrightness()
     global currentBrightness
