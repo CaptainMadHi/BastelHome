@@ -1,5 +1,5 @@
 # RasPi Smarthome
-### by Madhi and Oskar
+### by Mahdi and Oskar
 
 ## Installation
 
