@@ -46,7 +46,7 @@ def register_device():
   except KeyError:
     abort(400)
 
-@app.route("/api/unregister")
+@app.route("/api/unregister", methods=["DELETE"])
 def unregister_device():
   global devices
   try:
