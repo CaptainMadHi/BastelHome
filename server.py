@@ -1,48 +1,57 @@
 from flask import Flask, request, abort
-from hashlib import md5
 import threading
 import requests as requestslib
+from device_types import DEVICE_TYPES
 from utils import *
+import traceback
 
 app = Flask(__name__)
 
-device_types = {}
 devices = {}
 devices_lock = threading.Lock()
 
-@app.route("/test", methods=["GET", "POST"])
-def test():
-  return "ok\n"
-
 @app.route("/")
 def hello_world():
-  #TODO actually write a main view
-  return "Hello World"
+  return devices
 
-@app.route("/api/command/<device_id>", methods=["GET", "POST"])
-def api_request(device_id):
+@app.route("/api/command/<device_id>/<command>", methods=["GET", "POST"])
+def api_request(device_id, command):
   try:
-    device = None
     with devices_lock:
       device = devices[device_id]
-    if not checkRequestSize(request): abort(413)
-    response = requestslib.request(url=f"{device['ip']}:{device['port']}/api/command", method=request.method, data=request.get_data())
-    return response.content
   except KeyError:
     abort(404)
+  try:
+    if not checkRequestSize(request):
+      abort(413)
+    req_json = request.get_json() or {}
+    device_type = DEVICE_TYPES[device["device_type"]]
+    required_params = device_type[command]
+    for param in required_params.keys():
+      if not typecheck(req_json[param], required_params[param]):
+        abort(400)
+    for param in req_json.keys():
+      if not typecheck(req_json[param], required_params[param]):
+        abort(400)
 
+    response = requestslib.request(url=f"http://{device['ip']}:{device['port']}/api/command/{command}", method=request.method, json=req_json)
+    return response.content
+  except KeyError:
+    abort(400)
 
 @app.route("/api/register", methods=["PUT"])
 def register_device():
   global devices
   try:
-    if not checkRequestSize(request): abort(413)
+    if not checkRequestSize(request):
+      abort(413)
     device = request.get_json()
-    if not (checkIpv4(device['ip']) and checkPort(device['port']) and device['device_type'] in device_types): abort(400)
-    to_hash_str = f"{device['ip']},{device['port']},{device['device_type']}"
-    hash_str = md5(str.encode(to_hash_str)).hexdigest()
+    if not (checkIpv4(device['ip']) and checkPort(device['port']) and device['device_type'] in DEVICE_TYPES): 
+      abort(400)
+    hash_str = device_to_hash(device)
     with devices_lock:
       devices[hash_str] = device
+    return "OK\n"
   except KeyError:
     abort(400)
 
@@ -50,18 +59,18 @@ def register_device():
 def unregister_device():
   global devices
   try:
-    if not checkRequestSize(request): abort(413)
+    if not checkRequestSize(request):
+      abort(413)
     device = request.get_json()
-    to_hash_str = f"{device['ip']},{device['port']},{device['device_type']}"
-    hash_str = md5(str.encode(to_hash_str)).hexdigest()
+    hash_str = device_to_hash(device)
     with devices_lock:
       del devices[hash_str]
+    return "OK\n"
   except KeyError:
     abort(400)
 
-def setup():
-  global device_types
-  #TODO setup device_types config -> dict
+@app.route("/api/device_types")
+def get_device_types():
+  return DEVICE_TYPES
 
-setup()
 app.run(host="0.0.0.0", port=5000, debug=True)
