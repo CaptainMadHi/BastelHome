@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { desnakify } from "../utils";
+import { desnakify, apiCommand } from "../utils";
 export default {
   name: "Command",
   props: {
@@ -70,8 +70,12 @@ export default {
       this.collapseOpen = !this.collapseOpen;
       this.collapseOpenedOnce = true;
     },
-    sendCommand() {
-      alert(1);
+    async sendCommand() {
+      try {
+        const response = await apiCommand(this.deviceHash, this.name, this.params);
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
   watch: {

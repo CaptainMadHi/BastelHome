@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import { apiQuery } from "../utils";
+import { apiCommand } from "../utils";
 export default {
   name: "MockDevice",
   props: {
@@ -21,7 +21,7 @@ export default {
   methods: {
     async getStatus() {
       try {
-        const response = await apiQuery(this.deviceHash, "get");
+        const response = await apiCommand(this.deviceHash, "get");
         this.status = response.status;
         setTimeout(this.getStatus, 1000);
       } catch (e) {
