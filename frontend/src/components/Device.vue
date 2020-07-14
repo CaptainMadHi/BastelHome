@@ -1,6 +1,6 @@
 <template>
   <b-card :title="deviceTitle">
-    <component :is="device_type" :deviceHash="device_hash"></component>
+    <component :is="pascalCase(device_type)" :deviceHash="device_hash"></component>
     <div class="flex-column">
       <Command
         v-for="(value, key) in commands"
@@ -14,12 +14,14 @@
 </template>
 
 <script>
-import { desnakify } from "../utils";
+import { desnakify, pascalCase } from "../utils";
 import Command from "./Command";
+import MockDevice from "./MockDevice";
 export default {
   name: "Device",
   components: {
-    Command
+    Command,
+    MockDevice
   },
   props: {
     device_hash: String,
@@ -33,7 +35,8 @@ export default {
     }
   },
   methods: {
-    desnakify
+    desnakify,
+    pascalCase
   }
 };
 </script>

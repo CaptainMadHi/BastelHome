@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <b-container>
-      <Device device_name="Mein Licht" device_type="some_type" :commands="commands" />
+      <Device device_name="Mein Licht" device_type="mock_device" :commands="commands" />
     </b-container>
   </div>
 </template>
