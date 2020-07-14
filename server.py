@@ -73,4 +73,10 @@ def unregister_device():
 def get_device_types():
   return DEVICE_TYPES
 
+@app.route("/api/devices")
+def get_device_types():
+  allowed_keys = ["device_name", "device_type"]
+  filtered_devices = { key: {inner_key: devices[key][inner_key] for inner_key in allowed_keys} for key in devices.keys() }
+  return filtered_devices
+
 app.run(host="0.0.0.0", port=5000, debug=True)
