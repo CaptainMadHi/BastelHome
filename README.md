@@ -35,4 +35,24 @@ In der `device_types.py` sind alle Arten von devices in einem dict definiert:
 
 ## Website
 
-Diese kann mithilfe der device id Liste und der device config automatisch generiert werden. Für jeden device_type muss ein Baustein der Website definiert sein, welcher den Status des device richtig anzeigt und die Eingabe aller definierten commands außer des `get` commands ermöglicht. Die device id Liste sagt der Website, welche devices es gibt und welcher Art diese sind. 
+Die Website ist mit dem JS Framework Vue geschrieben. Sie ist geschachtelt aufgebaut, um beliebige devices von beliebigen device_types mit beliebigen commands anzeigen zu können. Neue device commands müssen nur serverseitig implementiert werden. Im Frontend muss für neue device_types nur eine view Komponente hinzugefügt werden, welche den Status des device sinnvoll anzeigt.
+
+### Website Deployment
+Man benötigt npm, den node package manager zum installieren der für den build genutzten js packages
+```
+curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n
+bash n lts
+```
+
+Sobald man npm hat, kann man die Website builden
+```
+cd frontend
+npm install
+npm run build
+```
+
+Dann einfach flask anwerfen und fertig
+```
+python server.py
+```
+
