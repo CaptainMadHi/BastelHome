@@ -1,4 +1,4 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, render_template
 import threading
 import requests as requestslib
 from device_types import DEVICE_TYPES
@@ -9,10 +9,6 @@ app = Flask(__name__)
 
 devices = {}
 devices_lock = threading.Lock()
-
-@app.route("/")
-def hello_world():
-  return devices
 
 @app.route("/api/command/<device_id>/<command>", methods=["GET", "POST"])
 def api_request(device_id, command):
@@ -78,5 +74,9 @@ def get_device_types():
   allowed_keys = ["device_name", "device_type"]
   filtered_devices = { key: {inner_key: devices[key][inner_key] for inner_key in allowed_keys} for key in devices.keys() }
   return filtered_devices
+
+@app.route("/")
+def main_page():
+  return render_template("index.html")
 
 app.run(host="0.0.0.0", port=5000, debug=True)
