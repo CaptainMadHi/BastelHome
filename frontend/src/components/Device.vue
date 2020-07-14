@@ -1,13 +1,13 @@
 <template>
   <b-card :title="deviceTitle">
-    <component :is="pascalCase(device_type)" :deviceHash="device_hash"></component>
+    <component :is="pascalCase(deviceType)" :deviceHash="deviceHash"></component>
     <div class="flex-column">
       <Command
         v-for="(value, key) in commands"
         :key="key"
         :name="key"
         :expectedParams="value"
-        :deviceHash="device_hash"
+        :deviceHash="deviceHash"
       />
     </div>
   </b-card>
@@ -24,14 +24,14 @@ export default {
     MockDevice
   },
   props: {
-    device_hash: String,
-    device_name: String,
-    device_type: String,
+    deviceHash: String,
+    deviceName: String,
+    deviceType: String,
     commands: Object
   },
   computed: {
     deviceTitle() {
-      return `${desnakify(this.device_name)} - ${desnakify(this.device_type)}`;
+      return `${desnakify(this.deviceName)} - ${desnakify(this.deviceType)}`;
     }
   },
   methods: {
