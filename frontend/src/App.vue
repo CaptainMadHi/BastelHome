@@ -1,26 +1,40 @@
 <template>
   <div id="app">
     <b-container>
-      <Command name="change_value" accordion-toggle="test" :expectedParams="expectedParams" />
+      <Device device_name="Mein Licht" device_type="some_type" :commands="commands" />
     </b-container>
   </div>
 </template>
 
 <script>
+import Device from "./components/Device";
 import Command from "./components/Command";
 
 export default {
   name: "App",
   components: {
-    Command
+    //Command,
+    Device
   },
   data: function() {
     return {
-      expectedParams: {
-        new_status: "number",
-        something_else: "boolean"
+      device: {
+        get: {},
+        change_status: {
+          new_status: "boolean"
+        },
+        change_status2: {
+          new_status: "boolean"
+        },
+        invert_status: {}
       }
     };
+  },
+  computed: {
+    commands() {
+      let { get, ...filteredCommands } = this.device;
+      return filteredCommands;
+    }
   }
 };
 </script>
@@ -30,7 +44,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }

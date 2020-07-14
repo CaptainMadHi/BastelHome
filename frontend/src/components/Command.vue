@@ -35,6 +35,7 @@ export default {
   name: "Command",
   props: {
     name: String,
+    deviceHash: String,
     expectedParams: Object
   },
   data: function() {
