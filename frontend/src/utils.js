@@ -25,7 +25,7 @@ export async function apiGetDevices() {
 }
 
 export async function apiCommand(deviceHash, command, jsonPayload) {
-  const method = command === "get" ? "GET" : "PUT";
+  const method = command === "get" ? "GET" : "POST";
   const url = `/api/command/${deviceHash}/${command}`
   const options = {
     headers: {
