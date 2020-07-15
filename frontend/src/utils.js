@@ -1,11 +1,11 @@
-import { capitalize, camelCase } from "voca";
+import { capitalize, camelCase, replaceAll } from "voca";
 
 export function pascalCase(str) {
   return capitalize(camelCase(str));
 }
 
 export function desnakify(str) {
-  return str ? str.replaceAll("_", " ") : "";
+  return replaceAll(str, "_", " ");
 }
 
 async function apiGeneric(url, options) {
