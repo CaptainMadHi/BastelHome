@@ -25,21 +25,8 @@ export default {
   },
   data: function() {
     return {
-      devices: {
-        "test-hash": {
-          device_name: "Test Device",
-          device_type: "mock_device"
-        }
-      },
-      deviceTypes: {
-        mock_device: {
-          get: {},
-          change_status: {
-            new_status: "boolean"
-          },
-          invert_status: {}
-        }
-      }
+      devices: null,
+      deviceTypes: null
     };
   },
   created() {
@@ -62,7 +49,7 @@ export default {
     },
     async getDevices() {
       try {
-        this.deviceTypes = await apiGetDevices();
+        this.devices = await apiGetDevices();
       } catch (e) {
         console.log(e);
       }
