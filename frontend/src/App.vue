@@ -48,6 +48,7 @@ export default {
   },
   methods: {
     filterCommands(commands) {
+      if (!commands) return {};
       const commandsClone = JSON.parse(JSON.stringify(commands));
       delete commandsClone.get;
       return commandsClone;

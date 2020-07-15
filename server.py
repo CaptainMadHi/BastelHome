@@ -1,4 +1,4 @@
-from flask import Flask, request, abort, render_template
+from flask import Flask, request, abort, render_template, jsonify
 import threading
 import requests as requestslib
 from device_types import DEVICE_TYPES
@@ -67,13 +67,13 @@ def unregister_device():
 
 @app.route("/api/device_types")
 def get_device_types():
-  return DEVICE_TYPES
+  return jsonify(DEVICE_TYPES)
 
 @app.route("/api/devices")
-def get_device_types():
+def get_devices():
   allowed_keys = ["device_name", "device_type"]
   filtered_devices = { key: {inner_key: devices[key][inner_key] for inner_key in allowed_keys} for key in devices.keys() }
-  return filtered_devices
+  return jsonify(filtered_devices)
 
 @app.route("/")
 def main_page():
