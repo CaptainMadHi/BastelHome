@@ -195,6 +195,24 @@ def brightnessDemo(strip):
                 time.sleep(1)
                 setBrightness(strip,1)
             
+    
+#--HTTP Request code--#
+status = False
+
+def get_status():
+  return {"status": status}
+
+def change_status(new_status):
+  global status
+  status = new_status
+  return {"status": status}
+
+def invert_status():
+  global status
+  status = not status
+  return {"status": status}
+
+#Request Handler#
 def incomingRequest():
     #color request in RGB format
     setColor()
@@ -203,7 +221,8 @@ def incomingRequest():
     
     #animation request
 
-# Main program logic follows:
+    
+# Main program #
 if __name__ == '__main__':
     # Process arguments
     parser = argparse.ArgumentParser()
