@@ -1,16 +1,9 @@
-#!/usr/bin/env python3
-# NeoPixel library strandtest example
-# Author: Tony DiCola (tony@tonydicola.com)
-#
-# Direct port of the Arduino NeoPixel library strandtest example.  Showcases
-# various animations on a strip of NeoPixels.
-
 import time
-from rpi_ws281x import *
+from neopixel import *
 import argparse
 
 # LED strip configuration:
-LED_COUNT      = 60      # Number of LED pixels in use. Change as Necessary.
+LED_COUNT      = 8      # Number of LED pixels in use. Change as Necessary.
 LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
 #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
@@ -20,58 +13,90 @@ LED_INVERT     = False   # True to invert the signal (when using NPN transistor 
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
 ####Colors for simple swapping and usage. Add colors with codes as necessary#### 
-green   = Color(255,0,0)
-red = Color(0,255,0)
-blue  = Color(0,0,255)
+green   = (0,255,0)
+red = (255,0,0)
+blue  = (0,0,255)
 
-yellow = Color(255,255,0)
-purple = Color(0,255,255)
-cyan = Color(255,0,255)
-orange = Color(130,255,0)
+yellow = (255,150,0)
+purple = (255,0,255)
+cyan = (0,255,255)
+orange = (255,45,0)
 
-warm = Color(95, 255, 20) # Natural light
-white = Color(255,255,255) 
+warm = (255, 95, 20) # Natural light
+white = (255,255,255) 
 
-#Global Attributes
-currentBrightness = 1
-currentColor = white # Default Color at Start 
+#--Global Attributes--#
+currentBrightness = 255 # Default Brightness at Start
+isGRB = True
+rgb = (255,255,255)
+currentColor = rgb
 
 ####Functions####
-
-def incBrightness(strip, brightness):          #used for setBrightness()
+def increaseBrightness(stip, amount=1):
     global currentBrightness
-    for j in range(currentBrightness,brightness):
-        for i in range(strip.numPixels()):
-            strip.setBrightness(j)
-        strip.show()
-        time.sleep(0.005)
-
-def decBrightness(strip, brightness):           #used for setBrightness()
-    global currentBrightness
-    for j in range(currentBrightness,brightness, -1):
-        for i in range(strip.numPixels()):
-            strip.setBrightness(j)
-        strip.show()
-        time.sleep(0.005)
-
-def setBrightness(strip, brightness):           #fades into wanted brightness over short period
-    global currentBrightness
-    if currentBrightness < brightness:
-        incBrightness(strip,brightness)
-    if currentBrightness > brightness:
-        decBrightness(strip,brightness)
+    
+    if currentBrightness < 255:
+        currentBrightness = currentBrightness+amount
+        strip.setBrightness(currentBrightness)
     else:
-        for i in range(strip.numPixels()):
-            strip.setBrightness(brightness)
-        strip.show()
+        print ('Max brightness reached')
+    strip.show()
+    time.sleep(0.005)
+
+def decreaseBrightness(stip, amount=1):
+    global currentBrightness
+    
+    if currentBrightness > 10:
+        currentBrightness = currentBrightness-amount
+        strip.setBrightness(currentBrightness)
+    else:
+        print ('Min brightness reached')
+    strip.show()
+    time.sleep(0.005)
+
+def setBrightness(strip, brightness):           #Überladen, fades into wanted brightness over short period. 
+    global currentBrightness
+    
+    if currentBrightness < brightness:
+        for i in range(currentBrightness,brightness):
+            increaseBrightness(strip)
+    
+    if currentBrightness > brightness:
+        for i in range(currentBrightness,brightness,-1):
+            decreaseBrightness(strip)
+    print('Setting Brightness to ', brightness)
+    strip.show()
     currentBrightness=brightness
 
-def setColor(strip, color):                             #sets LED-Strip color to input color code
-    global currentBrightness
+def setColor(strip, rgb):                             #sets LED-Strip color to input color code
+    global currentBrightness, currentColor, isGRB
+    r = rgb[0]
+    g = rgb[1]
+    b = rgb[2]
+    
+    if isGRB:
+        color = Color(g,r,b)
+    else:
+        color = Color(r,g,b)
+    
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
-    setBrightness(strip, currentBrightness)
-
+    strip.show()
+    #setBrightness(strip, currentBrightness)
+    currentColor=rgb
+    #print('Changing color')
+    
+def getColor():
+    global currentColor
+    r = currentColor[0]
+    g = currentColor[1]
+    b = currentColor[2]
+    
+    if isGRB:
+     print ('Current color is GRB(',g,',', r,',', b, ')')
+    else:
+     print ('Current color is RGB(',r,',', g,',', b, ')')  
+    return currentColor
     
 ####LED Animation Functions####
 #Selfmade#
@@ -81,6 +106,23 @@ def test1(strip, color, wait_ms=50):
         strip.setPixelColor(i, color)
     strip.show()
     time.sleep(0.5)
+
+def cyrcle(strip, color):
+    
+    r = color[0]
+    g = color[1]
+    b = color[2]
+    color = Color(g,r,b)
+   
+    pixels = strip.numPixels()
+   
+    for i in range(0, pixels):
+        strip.setPixelColor(i,color)
+        strip.setPixelColor((i + (pixels/2)),color)
+        
+        strip.setPixelColor(i-1, 0)
+        strip.setPixelColor(i + pixels/2-1,0)
+        strip.show()
 
 #Not own made Methods#   
 def colorWipe(strip, color, wait_ms=50):
@@ -153,7 +195,13 @@ def brightnessDemo(strip):
                 time.sleep(1)
                 setBrightness(strip,1)
             
-            
+def incomingRequest():
+    #color request in RGB format
+    setColor()
+    
+    #brightness request
+    
+    #animation request
 
 # Main program logic follows:
 if __name__ == '__main__':
@@ -174,26 +222,14 @@ if __name__ == '__main__':
     try:
         t = 0.5
         while True:
-           
-            #print ('Color wipe animations.')
-            #colorWipe(strip, Color(255, 0, 0))  # Red wipe
-            #colorWipe(strip, Color(0, 255, 0))  # Blue wipe
-            #colorWipe(strip, Color(0, 0, 255))  # Green wipe
-            #print ('Theater chase animations.')
-            #theaterChase(strip, Color(127, 127, 127))  # White theater chase
-            #theaterChase(strip, Color(127,   0,   0))  # Red theater chase
-            #theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
-            #print ('Rainbow animations.')
-            #rainbow(strip)
-            #rainbowCycle(strip)
-            #theaterChaseRainbow(strip)
-            #print('Own Test1 animation.')
-            #brightnessDemo(strip)
-            #pure(strip, warm)
-            #time.sleep(4)
-            #setBrightness(strip, 255)
+            setBrightness(strip, 255)
+            setColor(strip, blue)
+
     
     except KeyboardInterrupt:
         if args.clear:
             colorWipe(strip, Color(0,0,0), 10)
+
+
+
 
