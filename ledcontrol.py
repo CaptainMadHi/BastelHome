@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# NeoPixel library strandtest example
-# Author: Tony DiCola (tony@tonydicola.com)
-#
-# Direct port of the Arduino NeoPixel library strandtest example.  Showcases
-# various animations on a strip of NeoPixels.
-
 import time
 from neopixel import *
 import argparse
@@ -114,6 +107,23 @@ def test1(strip, color, wait_ms=50):
     strip.show()
     time.sleep(0.5)
 
+def cyrcle(strip, color):
+    
+    r = color[0]
+    g = color[1]
+    b = color[2]
+    color = Color(g,r,b)
+   
+    pixels = strip.numPixels()
+   
+    for i in range(0, pixels):
+        strip.setPixelColor(i,color)
+        strip.setPixelColor((i + (pixels/2)),color)
+        
+        strip.setPixelColor(i-1, 0)
+        strip.setPixelColor(i + pixels/2-1,0)
+        strip.show()
+
 #Not own made Methods#   
 def colorWipe(strip, color, wait_ms=50):
     """Wipe color across display a pixel at a time."""
@@ -185,7 +195,13 @@ def brightnessDemo(strip):
                 time.sleep(1)
                 setBrightness(strip,1)
             
-            
+def incomingRequest():
+    #color request in RGB format
+    setColor()
+    
+    #brightness request
+    
+    #animation request
 
 # Main program logic follows:
 if __name__ == '__main__':
@@ -206,21 +222,14 @@ if __name__ == '__main__':
     try:
         t = 0.5
         while True:
-            setColor(strip, yellow)
-            getColor()
-            time.sleep(2)
-            
-            setColor(strip, red)
-            getColor()
-            time.sleep(2)
-            
-            setColor(strip, orange)
-            getColor()
-            time.sleep(2)
+            setBrightness(strip, 255)
+            setColor(strip, blue)
+
     
     except KeyboardInterrupt:
         if args.clear:
             colorWipe(strip, Color(0,0,0), 10)
+
 
 
 
