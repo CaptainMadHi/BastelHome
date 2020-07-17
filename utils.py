@@ -25,11 +25,15 @@ def device_to_hash(device):
   to_hash_str = f"{device['ip']},{device['port']}"
   return md5(str.encode(to_hash_str)).hexdigest()
 
-def typecheck(obj, typestr):
-  if typestr == "boolean":
+def typecheck(obj, type_val):
+  if isinstance(type_val, list):
+    return obj in type_val
+  if type_val == "rgb":
+    return isinstance(obj, int) and 0<= obj <= 0xffffff
+  if type_val == "boolean":
     return isinstance(obj, bool)
-  if typestr == "string":
+  if type_val == "string":
     return isinstance(obj, str)
-  if typestr == "number":
+  if type_val == "number":
     return isinstance(obj, int) or isinstance(obj, float)
   raise Exception

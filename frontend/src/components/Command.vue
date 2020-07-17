@@ -15,9 +15,11 @@
       <b-card-body class="flex-column">
         <div v-for="(value, key) in expectedParams" :key="key" class="flex-row">
           <label class="flex-shrink-0">{{desnakify(key)}}</label>
+          <b-form-select v-if="Array.isArray(value)" :options="expectedParams[key]" v-model="params[key]"></b-form-select>
+          <ColorPicker v-else-if="value === 'rgb'" v-model="params[key]" />
           <b-form-input
             class="input-medium"
-            v-if="value === 'string'"
+            v-else-if="value === 'string'"
             type="text"
             v-model="params[key]"
           ></b-form-input>
@@ -30,9 +32,13 @@
 </template>
 
 <script>
-import { desnakify, apiCommand } from "../utils";
+import { desnakify, deepIncludes, apiCommand } from "../utils";
+import ColorPicker from "./basecomponents/ColorPicker";
 export default {
   name: "Command",
+  components: {
+    ColorPicker
+  },
   props: {
     name: String,
     deviceHash: String,
@@ -53,12 +59,21 @@ export default {
       if (Object.keys(this.expectedParams).length === 0) {
         return true;
       }
+      if (!this.collapseOpenedOnce) {
+        return false;
+      }
       for (const key in this.expectedParams) {
+        if (Array.isArray(this.expectedParams[key])) {
+          return deepIncludes(this.expectedParams[key], this.params[key]);
+        }
+        if (this.expectedParams[key] === "rgb") {
+          return Number.isInteger(this.params[key]) && 0 <= this.params[key] <= 0xffffff;
+        }
         if (typeof this.params[key] !== this.expectedParams[key]) {
           return false;
         }
       }
-      return this.collapseOpenedOnce;
+      return true;
     }
   },
   methods: {

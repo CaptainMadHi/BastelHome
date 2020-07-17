@@ -8,6 +8,10 @@ export function desnakify(str) {
   return replaceAll(str, "_", " ");
 }
 
+export function deepIncludes(arr, obj) {
+  return arr.findIndex(x => JSON.stringify(x) === JSON.stringify(obj)) !== -1;
+}
+
 async function apiGeneric(url, options) {
   const response = await fetch(url, options);
   if (!response.ok) {
