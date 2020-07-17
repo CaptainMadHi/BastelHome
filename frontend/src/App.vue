@@ -1,15 +1,20 @@
 <template>
   <div id="app">
-    <b-container v-if="devices && deviceTypes">
+    <b-container>
       <h1 class="page-header">BastelHome</h1>
-      <Device
-        v-for="(device, deviceHash) in devices"
-        :key="deviceHash"
-        :deviceName="device.device_name"
-        :deviceType="device.device_type"
-        :deviceHash="deviceHash"
-        :commands="filterCommands(deviceTypes[device.device_type])"
-      />
+      <div v-if="devices && deviceTypes">
+        <Device
+          v-for="(device, deviceHash) in devices"
+          :key="deviceHash"
+          :deviceName="device.device_name"
+          :deviceType="device.device_type"
+          :deviceHash="deviceHash"
+          :commands="filterCommands(deviceTypes[device.device_type])"
+        />
+      </div>
+      <div v-else class="text-center">
+        <b-spinner></b-spinner>
+      </div>
     </b-container>
   </div>
 </template>
@@ -44,6 +49,12 @@ export default {
       try {
         this.deviceTypes = await apiGetDeviceTypes();
       } catch (e) {
+        this.$bvToast.toast("Couldn't get device type data", {
+          title: "Connection Error",
+          variant: "danger",
+          solid: true,
+          toaster: "b-toaster-bottom-center"
+        });
         console.log(e);
       }
     },
@@ -51,6 +62,12 @@ export default {
       try {
         this.devices = await apiGetDevices();
       } catch (e) {
+        this.$bvToast.toast("Couldn't get device data", {
+          title: "Connection Error",
+          variant: "danger",
+          solid: true,
+          toaster: "b-toaster-bottom-center"
+        });
         console.log(e);
       }
     }
@@ -61,7 +78,7 @@ export default {
 <style>
 h1 {
   text-align: center;
-  margin-bottom: 2.5rem!important;
+  margin-bottom: 2.5rem !important;
 }
 
 #app {

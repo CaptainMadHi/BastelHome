@@ -15,7 +15,11 @@
       <b-card-body class="flex-column">
         <div v-for="(value, key) in expectedParams" :key="key" class="flex-row">
           <label class="flex-shrink-0">{{desnakify(key)}}</label>
-          <b-form-select v-if="Array.isArray(value)" :options="expectedParams[key]" v-model="params[key]"></b-form-select>
+          <b-form-select
+            v-if="Array.isArray(value)"
+            :options="expectedParams[key]"
+            v-model="params[key]"
+          ></b-form-select>
           <ColorPicker v-else-if="value === 'rgb'" v-model="params[key]" />
           <b-form-input
             class="input-medium"
@@ -67,7 +71,10 @@ export default {
           return deepIncludes(this.expectedParams[key], this.params[key]);
         }
         if (this.expectedParams[key] === "rgb") {
-          return Number.isInteger(this.params[key]) && 0 <= this.params[key] <= 0xffffff;
+          return (
+            Number.isInteger(this.params[key]) &&
+            0 <= this.params[key] <= 0xffffff
+          );
         }
         if (typeof this.params[key] !== this.expectedParams[key]) {
           return false;
@@ -87,8 +94,18 @@ export default {
     },
     async sendCommand() {
       try {
-        const response = await apiCommand(this.deviceHash, this.name, this.params);
+        const response = await apiCommand(
+          this.deviceHash,
+          this.name,
+          this.params
+        );
       } catch (e) {
+        this.$bvToast.toast("Couldn't send command", {
+          title: "Connection Error",
+          variant: "danger",
+          solid: true,
+          toaster: "b-toaster-bottom-center"
+        });
         console.log(e);
       }
     }

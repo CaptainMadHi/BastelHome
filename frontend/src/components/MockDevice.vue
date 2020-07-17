@@ -25,6 +25,12 @@ export default {
         this.status = response.status;
         setTimeout(this.getStatus, 1000);
       } catch (e) {
+        this.$bvToast.toast(`Couldn't get data for mock device`, {
+          title: "Connection Error",
+          variant: "danger",
+          solid: true,
+          toaster: "b-toaster-bottom-center"
+        });
         console.log(e);
       }
     }
