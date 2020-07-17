@@ -24,12 +24,19 @@ orange = (255,45,0)
 
 warm = (255, 95, 20) # Natural light
 white = (255,255,255) 
-
+off = (0,0,0)
 #--Global Attributes--#
 currentBrightness = 255 # Default Brightness at Start
 isGRB = True
-rgb = (255,255,255)
+rgb = off
 currentColor = rgb
+
+status = "off" #used for requests
+prevStatus = status
+#                   Status Codes                        #
+#'off'       0-> use when light is turned off| Default  #
+#'on'        1-> use when light is turned on            #
+#'animation' 2-> use when animation is running          #
 
 ####Functions####
 def increaseBrightness(stip, amount=1):
@@ -196,15 +203,25 @@ def brightnessDemo(strip):
                 setBrightness(strip,1)
             
     
-#--HTTP Request code--#
+#--Request Handling--#
 status = False
 
+def changeStatus(s):
+    global status
+    if s = 0:
+        status = "off"
+    if s = 1:
+        status = "on"
+    if s = 2:
+        status = "animation"
+        
 def get_status():
   return {"status": status}
 
 def change_status(new_status):
   global status
   status = new_status
+  handleRequest(status)
   return {"status": status}
 
 def invert_status():
@@ -213,15 +230,46 @@ def invert_status():
   return {"status": status}
 
 #Request Handler#
-def incomingRequest():
-    #color request in RGB format
-    setColor()
+def handleRequest(s):
+    global status, prevStatus
+    
+    #color request !Has to be changed! Cant address variables from string in that way!
+    #if s = "white" or s = "warm" or s = "blue" or s = "purple" or s = "cyan" or s = "yellow" or s = "green" or s = "red"  or s = "orange" :
+    #    color = s 
+    #    setColor(s)
+    #    prevStatus = status
+    
+    #rgb request
+    if len(s) = 11:
+        r = int(s[0:3])
+        g = int(s[4:7])
+        b = int(s[8:11])
+        rgb=(r,g,b)
+        setColor(rgb)
+        prevStatus = status
     
     #brightness request
+    if int(s) > 0 and int(s) <= 255:
+        setBightness(s)
+        prevStatus = status
     
+    #Turn off
+    if int(s) = 0 or s = "off" :
+        setColor(off)
+        #stopanimation()
+        prevStatus = status
+    else:
+        status = prevStatus
+        
     #animation request
 
-    
+def start_animation(anim):
+    #open thread
+    #execute animation in thread
+
+def stop_animation():
+    #close thread
+    #use last color
 # Main program #
 if __name__ == '__main__':
     # Process arguments
