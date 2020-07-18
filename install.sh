@@ -1,10 +1,4 @@
-activate() {
-  . "./venv/bin/activate"
-}
-
-python3 -m venv venv            # setup venv
-activate                        # activate venv
-pip install -r requirements.txt # install python packages into venv
+sudo pip3 install -r requirements.txt # install python packages into venv
 
 curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n #install node & npm
 sudo bash n lts
