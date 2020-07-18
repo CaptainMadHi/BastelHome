@@ -17,9 +17,6 @@ DEVICE_TYPES = {
       "change_toWarm":{},
       "change_toWhite":{},
       "change_turnOff":{},
-      #"start_animation":{
-          #"animation": ["rainbow", "fisch"]
-      #},
-      "start_animation_rainbowCycle":{}
+      "start_animation":{}
   }
 }
