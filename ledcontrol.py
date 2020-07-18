@@ -197,6 +197,7 @@ def brightnessDemo(strip):
 #--Request Handling--#        
 def get():
     global current_color, current_brightness, current_animation 
+    #@me TODO change red green blue to hex rgb
     return {"red": current_color[0], "green": current_color[1], "blue": current_color[2], "brightness": current_brightness, "animation": current_animation} 
 
 def change_rgb(color):
@@ -237,7 +238,8 @@ def change_turnOff():
     stop_animation()
     setColor(strip, off)
     return{"Turned off: " : "true"}
-
+#@Me TODO merge into one function 
+#@Me TODO CHANGE FUCKING NAMES
 def start_animation_theaterChaseRainbow():
     global current_animation, animation_thread
     stop_animation()
@@ -317,7 +319,7 @@ if __name__ == '__main__':
             stop_animation()
             time.sleep(20)
     
-    except KeyboardInterrupt:
+    except Exception:
             stop_animation()
             colorWipe(strip, Color(0,0,0), 10)
             
