@@ -248,7 +248,7 @@ def start_animation_theaterChaseRainbow():
     animation_thread.start()
     return{"Animation: " : current_animation}
 
-def start_animation_rainbowCycle():
+def start_animation():
     global current_animation, animation_thread
     stop_animation()
     animation_thread = threading.Thread(target=rainbowCycle, args=(strip,))
