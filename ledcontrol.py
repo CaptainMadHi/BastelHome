@@ -215,9 +215,9 @@ def change_rgb(rgb):
     global current_color, current_animation, strip
     stop_animation()
         
-    r = (rgb and 0xff0000) >> 16
+    r = rgb and 0xff0000
     print(r)
-    g = (rgb and 0x00ff00) >> 8
+    g = rgb and 0x00ff00
     print(g)
     b = rgb and 0x0000ff
     print(b)
@@ -251,7 +251,7 @@ def change_turnOff():
     return{"Turned off: " : "true"}
 
 def start_animation():
-    global current_animation
+    global current_animation, animation_thread
     stop_animation()
     #if animation == "theaterChaseAnimation"
     animation_thread = threading.Thread(target=theaterChaseRainbow, args=(strip,))
@@ -263,7 +263,7 @@ def stop_animation():
     global current_animation, animation_thread, current_color
     if animation_thread is not None:
         animation_thread.do_run = False
-        thread.join()     
+        animation_thread.join()     
     animation_thread = None
     setColor(strip, current_color)
     current_animation = "static"
@@ -301,6 +301,8 @@ if __name__ == '__main__':
             time.sleep(5)
             stop_animation()
 
+    
     except KeyboardInterrupt:
-        if args.clear:
+            stop_animation()
             colorWipe(strip, Color(0,0,0), 10)
+            
