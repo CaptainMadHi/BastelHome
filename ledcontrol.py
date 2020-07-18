@@ -32,6 +32,10 @@ current_color      = off # Tuple format for RGB values, e.g.: (255,255,255)
 current_animation  = "static"
 animation_thread  = None
 
+# Create NeoPixel object with appropriate configuration.
+strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+# Intialize the library (must be called once before other functions).
+strip.begin()
 
 status = "off" #used for requests
 prevStatus = status
@@ -190,7 +194,6 @@ def theaterChaseRainbow(strip, wait_ms=50):
 def brightnessDemo(strip):
             global green, red, blue, yellow, orange, purple, cyan, warm, weiß
             spectrum = [green, red, blue, yellow, orange, purple, cyan, warm, weiß]
-            
             for i in spectrum:
                 pure(strip, i)
                 time.sleep(1)
@@ -202,56 +205,60 @@ def brightnessDemo(strip):
             
     
 #--Request Handling--#        
-def get_status():
+def get():
     global current_color, current_brightness, current_animation 
     return {"red": current_color[0], "green": current_color[1], "blue": current_color[2], "brightness": current_brightness, "animation": current_animation} 
 
-def change_rgb(rgb, strip=strip):
-    global current_color, current_animation,
+def change_rgb(rgb):
+    global current_color, current_animation, strip
     stop_animation()
         
     r = rgb and 0xff0000
     g = rgb and 0x00ff00
     b = rgb and 0x0000ff
     set_color(strip, (r,g,b))
-    return {"RGB": (r,g,b)}
+    return{"RGB": (r,g,b)}
 
-def change_brightness(brightness, strip=strip):
+def change_brightness(brightness):
     if(brightness >= 0 and brightness <= 255):
         setBrightness(brightness)
         return{"Brightness" : brightness}
     else:
         return{"Wrong Input" : "Brightnesslevel must be between 0-255" }
 
-def change_toWarm(strip=strip):
-    global current_animation, warm
+def change_toWarm():
+    global current_animation, warm, strip
     stop_animation()
     set_color(strip, warm)
-    return {"Preset Color": warm }
+    return{"Preset Color": warm }
 
-def change_toWhite(strip=strip):
-    global current_animation, white
+def change_toWhite():
+    global current_animation, white, strip
     stop_animation()
     set_color(strip, white)
-    return {"Preset Color": white }
+    return{"Preset Color": white }
 
-def change_turnOff(strip=strip):
-    global current_animation, off
+def change_turnOff():
+    global current_animation, off, strip
     stop_animation()
-    setColor(off)
+    setColor(strip, off)
     return{"Turned off: " : "true"}
 
 def start_animation(animation):
     global current_animation
+    stop_animation():
     #if animation == "theaterChaseAnimation"
     animation_thread = threading.Thread(target=self.theaterChaseRainbow, args=(strip))
     current_animation = "theaterChaseRainbow"
     return{"Animation: " : current_animation}
     
 def stop_animation():
-    global current_animation, animation_thread
+    global current_animation, animation_thread, current_color
     animation_thread.exit()
-    return{"Animation stopped"}
+    animation_thread = None
+    set_color(strip, current_color)
+    current_animation = "static"
+    return{"Animation: " : "stopped"}
 
 
 # Main program #
@@ -261,10 +268,6 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
     args = parser.parse_args()
 
-    # Create NeoPixel object with appropriate configuration.
-    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-    # Intialize the library (must be called once before other functions).
-    strip.begin()
 
     print ('Press Ctrl-C to quit.')
     if not args.clear:
