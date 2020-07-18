@@ -319,7 +319,7 @@ if __name__ == '__main__':
             stop_animation()
             time.sleep(20)
     
-    except KeyboardInterrupt:
+    except Exception:
             stop_animation()
             colorWipe(strip, Color(0,0,0), 10)
             
