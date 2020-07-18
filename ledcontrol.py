@@ -125,16 +125,27 @@ def colorWipe(strip, color, wait_ms=50):
         strip.show()
         time.sleep(wait_ms/1000.0)
 
-def theaterChase(strip, color, wait_ms=50):
-    """Movie theater light style chaser animation."""
-    while True:
-        for q in range(3):
-            for i in range(0, strip.numPixels(), 3):
-                strip.setPixelColor(i+q, color)
-            strip.show()
-            time.sleep(wait_ms/100.0)
-            for i in range(0, strip.numPixels(), 3):
-                strip.setPixelColor(i+q, 0)
+#def theaterChase(strip, color, wait_ms=50):
+#    """Movie theater light style chaser animation."""
+#    while True:
+#        for q in range(3):
+#            for i in range(0, strip.numPixels(), 3):
+#                strip.setPixelColor(i+q, color)
+#            strip.show()
+#            time.sleep(wait_ms/100.0)
+#            for i in range(0, strip.numPixels(), 3):
+#                strip.setPixelColor(i+q, 0)
+
+def theaterChase(strip, color, wait_ms=50, iterations=10):
+    while True: #"""Movie theater light style chaser animation."""
+        for j in range(iterations):
+            for q in range(3):
+                for i in range(0, strip.numPixels(), 3):
+                    strip.setPixelColor(i+q, color)
+                strip.show()
+                time.sleep(wait_ms/100.0)
+                for i in range(0, strip.numPixels(), 3):
+                    strip.setPixelColor(i+q, 0)
 
 def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
