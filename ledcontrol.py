@@ -158,14 +158,15 @@ def rainbow(strip, wait_ms=20):
         if not getattr(animation_thread, "do_run", True): return
         time.sleep(wait_ms/1000.0)
 
-def rainbowCycle(strip, wait_ms=20):
+def rainbowCycle(strip, wait_ms=20, iterations=10):
     """Draw rainbow that uniformly distributes itself across all pixels."""
     while True:
-        for i in range(strip.numPixels()):
-            strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels())) & 255))
-        strip.show()
-        if not getattr(animation_thread, "do_run", True): return
-        time.sleep(wait_ms/1000.0)
+        for j in range(iterations):
+            for i in range(strip.numPixels()):
+                strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels() + j)) & 255))
+            strip.show()
+            if not getattr(animation_thread, "do_run", True): return
+            time.sleep(wait_ms/1000.0)
 
 def theaterChaseRainbow(strip, wait_ms=50):
     """Rainbow movie theater light style chaser animation."""
