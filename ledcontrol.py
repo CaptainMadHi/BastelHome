@@ -1,6 +1,7 @@
 import time
 from neopixel import *
 import argparse
+import threading
 
 # LED strip configuration:
 LED_COUNT      = 8      # Number of LED pixels in use. Change as Necessary.
@@ -32,6 +33,10 @@ current_color      = off # Tuple format for RGB values, e.g.: (255,255,255)
 current_animation  = "static"
 animation_thread  = None
 
+# Create NeoPixel object with appropriate configuration.
+strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+# Intialize the library (must be called once before other functions).
+strip.begin()
 
 status = "off" #used for requests
 prevStatus = status
@@ -100,9 +105,9 @@ def getColor():
     b = current_color[2]
     
     if isGRB:
-    print ('Current color is GRB(',g,',', r,',', b, ')')
+        print ('Current color is GRB(',g,',', r,',', b, ')')
     else:
-    print ('Current color is RGB(',r,',', g,',', b, ')')  
+        print ('Current color is RGB(',r,',', g,',', b, ')')  
     return current_color
     
 ####LED Animation Functions####
@@ -182,6 +187,7 @@ def theaterChaseRainbow(strip, wait_ms=50):
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, wheel((i+j) % 255))
             strip.show()
+            if not getattr(animation_thread, "do_run", True): return
             time.sleep(wait_ms/1000.0)
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, 0)
@@ -190,7 +196,6 @@ def theaterChaseRainbow(strip, wait_ms=50):
 def brightnessDemo(strip):
             global green, red, blue, yellow, orange, purple, cyan, warm, weiß
             spectrum = [green, red, blue, yellow, orange, purple, cyan, warm, weiß]
-            
             for i in spectrum:
                 pure(strip, i)
                 time.sleep(1)
@@ -202,57 +207,67 @@ def brightnessDemo(strip):
             
     
 #--Request Handling--#        
-def get_status():
+def get():
     global current_color, current_brightness, current_animation 
     return {"red": current_color[0], "green": current_color[1], "blue": current_color[2], "brightness": current_brightness, "animation": current_animation} 
 
-def change_rgb(rgb, strip=strip):
-    global current_color, current_animation,
+def change_rgb(rgb):
+    global current_color, current_animation, strip
     stop_animation()
         
-    r = rgb and 0xff0000
-    g = rgb and 0x00ff00
-    b = rgb and 0x0000ff
-    set_color(strip, (r,g,b))
-    return {"RGB": (r,g,b)}
+    r = (rgb & 0xff0000) >> 16
+    print(r)
+    g = (rgb & 0x00ff00) >> 8
+    print(g)
+    b =  rgb & 0x0000ff
+    print(b)
+    setColor(strip, (r,g,b))
+    return{"RGB": (r,g,b)}
 
-def change_brightness(brightness, strip=strip)
+def change_brightness(brightness):
+    global stop
     if(brightness >= 0 and brightness <= 255):
-        setBrightness(brightness)
+        setBrightness(strip, brightness)
         return{"Brightness" : brightness}
     else:
         return{"Wrong Input" : "Brightnesslevel must be between 0-255" }
 
-def change_toWarm(strip=strip):
-    global current_animation, warm
+def change_toWarm():
+    global current_animation, warm, strip
     stop_animation()
-    set_color(strip, warm)
-    return {"Preset Color": warm }
+    setColor(strip, warm)
+    return{"Preset Color": warm }
 
-def change_toWhite(strip=strip):
-    global current_animation, white
+def change_toWhite():
+    global current_animation, white, strip
     stop_animation()
-    set_color(strip, white)
-    return {"Preset Color": white }
+    setColor(strip, white)
+    return{"Preset Color": white }
 
-def change_turnOff(strip=strip):
-    global current_animation, off
+def change_turnOff():
+    global current_animation, off, strip
     stop_animation()
-    setColor(off)
+    setColor(strip, off)
     return{"Turned off: " : "true"}
 
-def start_animation(animation):
-    global current_animation
+def start_animation():
+    global current_animation, animation_thread
+    stop_animation()
     #if animation == "theaterChaseAnimation"
-    animation_thread = threading.Thread(target=self.theaterChaseRainbow, args=(strip))
+    animation_thread = threading.Thread(target=theaterChaseRainbow, args=(strip,))
     current_animation = "theaterChaseRainbow"
+    animation_thread.start()
     return{"Animation: " : current_animation}
     
 def stop_animation():
-    global current_animation, animation_thread
-    animation_thread.exit()
-    return{"Animation stopped"}
-
+    global current_animation, animation_thread, current_color
+    if animation_thread is not None:
+        animation_thread.do_run = False
+        animation_thread.join()     
+    animation_thread = None
+    setColor(strip, current_color)
+    current_animation = "static"
+    return{"Animation: " : "stopped"}
 
 # Main program #
 if __name__ == '__main__':
@@ -260,11 +275,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
     args = parser.parse_args()
-
-    # Create NeoPixel object with appropriate configuration.
-    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-    # Intialize the library (must be called once before other functions).
-    strip.begin()
+    change_brightness(90)
 
     print ('Press Ctrl-C to quit.')
     if not args.clear:
@@ -273,14 +284,25 @@ if __name__ == '__main__':
     try:
         t = 0.5
         while True:
-            setBrightness(strip, 255)
-            setColor(strip, blue)
+            print("Testing change_RGB")
+            change_rgb(0xff0000)
+            time.sleep(2)
+            
+            print("Testing change_turnOff()")
+            change_turnOff()
+            time.sleep(2)
+            
+            print("Testing change_toWarm()")
+            change_toWarm()
+            time.sleep(2)
+            
+            print("Testing start_animation()")
+            start_animation()
+            time.sleep(5)
+            stop_animation()
 
     
     except KeyboardInterrupt:
-        if args.clear:
+            stop_animation()
             colorWipe(strip, Color(0,0,0), 10)
-
-
-
-
+            
