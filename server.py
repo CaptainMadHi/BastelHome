@@ -20,7 +20,7 @@ def api_request(device_id, command):
   try:
     if not checkRequestSize(request):
       abort(413)
-    req_json = request.get_json() or {}
+    req_json = request.get_json(silent=True) or {}
     device_type = DEVICE_TYPES[device["device_type"]]
     required_params = device_type[command]
     for param in required_params.keys():
