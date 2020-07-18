@@ -216,7 +216,7 @@ def change_rgb(rgb, strip=strip):
     set_color(strip, (r,g,b))
     return {"RGB": (r,g,b)}
 
-def change_brightness(brightness, strip=strip)
+def change_brightness(brightness, strip=strip):
     if(brightness >= 0 and brightness <= 255):
         setBrightness(brightness)
         return{"Brightness" : brightness}
