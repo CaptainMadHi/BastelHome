@@ -162,7 +162,7 @@ def rainbowCycle(strip, wait_ms=20):
     """Draw rainbow that uniformly distributes itself across all pixels."""
     while True:
         for i in range(strip.numPixels()):
-            strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels()) + j) & 255))
+            strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels())) & 255))
         strip.show()
         if not getattr(animation_thread, "do_run", True): return
         time.sleep(wait_ms/1000.0)
