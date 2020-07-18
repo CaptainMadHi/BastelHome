@@ -160,13 +160,13 @@ def rainbow(strip, wait_ms=20):
 
 def rainbowCycle(strip, wait_ms=20):
     """Draw rainbow that uniformly distributes itself across all pixels."""
-    for j in range(255):
-        for i in range(strip.numPixels()):
-            strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels() + j)) & 255))
-        strip.show()
-        if j == 255 : j = 1 
-        if not getattr(animation_thread, "do_run", True): return
-        time.sleep(wait_ms/1000.0)
+    while True :
+        for j in range(255):
+            for i in range(strip.numPixels()):
+                strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels() + j)) & 255))
+            strip.show()
+            if not getattr(animation_thread, "do_run", True): return
+            time.sleep(wait_ms/1000.0)
 
 def theaterChaseRainbow(strip, wait_ms=50):
     """Rainbow movie theater light style chaser animation."""
