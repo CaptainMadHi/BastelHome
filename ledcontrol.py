@@ -4,7 +4,7 @@ import argparse
 import threading
 
 # LED strip configuration:
-LED_COUNT      = 8      # Number of LED pixels in use. Change as Necessary.
+LED_COUNT      = 60      # Number of LED pixels in use. Change as Necessary.
 LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
 #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
@@ -28,7 +28,7 @@ white = (255,255,255)
 off = (0,0,0)
 #--Global Attributes--#
 current_brightness = 255 # Default Brightness at Start
-isGRB             = True
+isGRB             = False
 current_color      = off # Tuple format for RGB values, e.g.: (255,255,255)
 current_animation  = "static"
 animation_thread  = None
@@ -314,7 +314,7 @@ if __name__ == '__main__':
             start_animation_rainbowCycle()
             time.sleep(5)
             stop_animation()
-            time.sleep(2)
+            time.sleep(20)
     
     except KeyboardInterrupt:
             stop_animation()
