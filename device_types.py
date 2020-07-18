@@ -18,7 +18,7 @@ DEVICE_TYPES = {
       "warm_light":{},
       "turn_off":{},
       "start_animation":{
-          "animation" : ["static", "RainbowChase", "RainbowCycle", "TheaterChase"]
+          "animation" : ["Static", "RainbowChase", "RainbowCycle", "TheaterChase"]
       }
   }
 }
