@@ -28,7 +28,7 @@ export default {
           setTimeout(this.get.bind(this, true), 1000);
         }
       } catch (e) {
-        this.$bvToast.toast(`Couldn't get data for mock device`, {
+        this.$bvToast.toast(`Couldn't get data for ledcontrol`, {
           title: "Connection Error",
           variant: "danger",
           solid: true,
