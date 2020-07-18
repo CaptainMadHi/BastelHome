@@ -2,6 +2,7 @@ import time
 from rpi_ws281x import *
 import argparse
 import threading
+import atexit
 
 # LED strip configuration:
 LED_COUNT      = 60      # Number of LED pixels in use. Change as Necessary.
@@ -46,6 +47,10 @@ prevStatus = status
 #'animation' 2-> use when animation is running          #
 
 ####Functions####
+@atexit.register
+def cleanup():
+  colorWipe((strip, Color(0,0,0), 10)) #all needed cleanuo stuff  
+
 def increaseBrightness(stip, amount=1):
     global current_brightness
     
@@ -179,20 +184,6 @@ def theaterChaseRainbow(strip, wait_ms=50):
             time.sleep(wait_ms/1000.0)
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, 0)
-
-####Demo Functions to test Functions####
-def brightnessDemo(strip):
-            global green, red, blue, yellow, orange, purple, cyan, warm, weiß
-            spectrum = [green, red, blue, yellow, orange, purple, cyan, warm, weiß]
-            for i in spectrum:
-                pure(strip, i)
-                time.sleep(1)
-                setBrightness(strip,50)
-                time.sleep(1)
-                setBrightness(strip, 255)
-                time.sleep(1)
-                setBrightness(strip,1)
-            
     
 #--Request Handling--#        
 def get():
@@ -200,7 +191,7 @@ def get():
     #@me TODO change red green blue to hex rgb
     return {"red": current_color[0], "green": current_color[1], "blue": current_color[2], "brightness": current_brightness, "animation": current_animation} 
 
-def change_rgb(color):
+def set_color(color):
     global current_color, current_animation, strip
     stop_animation()
         
@@ -213,7 +204,7 @@ def change_rgb(color):
     setColor(strip, (r,g,b))
     return{"RGB": (r,g,b)}
 
-def change_brightness(brightness):
+def set_brightness(brightness):
     global stop
     if(brightness >= 0 and brightness <= 255):
         setBrightness(strip, brightness)
@@ -221,46 +212,46 @@ def change_brightness(brightness):
     else:
         return{"Wrong Input" : "Brightnesslevel must be between 0-255" }
 
-def change_toWarm():
+def warm_light():
     global current_animation, warm, strip
     stop_animation()
     setColor(strip, warm)
     return{"Preset Color": warm }
 
-def change_toWhite():
+def white_light():
     global current_animation, white, strip
     stop_animation()
     setColor(strip, white)
     return{"Preset Color": white }
 
-def change_turnOff():
+def turn_off():
     global current_animation, off, strip
     stop_animation()
     setColor(strip, off)
     return{"Turned off: " : "true"}
 #@Me TODO merge into one function 
 #@Me TODO CHANGE FUCKING NAMES
-def start_animation_theaterChaseRainbow():
-    global current_animation, animation_thread
-    stop_animation()
-    animation_thread = threading.Thread(target=theaterChaseRainbow, args=(strip,))
-    current_animation = "theaterChaseRainbow"
-    animation_thread.start()
-    return{"Animation: " : current_animation}
 
-def start_animation():
-    global current_animation, animation_thread
-    stop_animation()
-    animation_thread = threading.Thread(target=rainbowCycle, args=(strip,))
-    current_animation = "rainbowCycle"
-    animation_thread.start()
-    return{"Animation: " : current_animation}
-
-def start_animation_theaterChase():
+def start_animation(animation):
     global current_animation, animation_thread, current_color
     stop_animation()
-    animation_thread = threading.Thread(target=theaterChase, args=(strip, current_color))
-    current_animation = "theaterChase"
+    
+    #RainbowCycle
+    if animation == "RainbowCycle":
+        animation_thread = threading.Thread(target=rainbowCycle, args=(strip,))
+    #RainbowChase
+    if animation == "RainbowChase":
+        animation_thread = threading.Thread(target=theaterChaseRainbow, args=(strip,))
+    #TheaterChase
+    if animation == "TheaterChase":
+        animation_thread = threading.Thread(target=theaterChase, args=(strip, current_color))
+    #switch to static 
+    else:
+        animation_thread = None
+        current_animation = "static"
+        return{"Animation: " : "static"}   
+    
+    current_animation = animation
     animation_thread.start()
     return{"Animation: " : current_animation}
     
@@ -289,36 +280,8 @@ if __name__ == '__main__':
     try:
         t = 0.5
         while True:
-            print("Testing change_RGB")
-            change_rgb(0xff0000)
-            time.sleep(2)
-            
-            print("Testing change_turnOff()")
-            change_turnOff()
-            time.sleep(2)
-            
-            print("Testing change_toWarm()")
-            change_toWarm()
-            time.sleep(2)
-            
-            print("Testing start_animation_theaterChaseRainbow()")
-            start_animation_theaterChaseRainbow()
-            time.sleep(5)
-            stop_animation()
-            time.sleep(2)
 
-           # print("Testing start_animation_theaterChase()")
-           # start_animation_theaterChase()
-           # time.sleep(5)
-           # stop_animation()
-           # time.sleep(2)
-
-            print("Testing start_animation_rainbowCycle()")
-            start_animation_rainbowCycle()
-            time.sleep(5)
-            stop_animation()
-            time.sleep(20)
-    
+  
     except Exception:
             stop_animation()
             colorWipe(strip, Color(0,0,0), 10)

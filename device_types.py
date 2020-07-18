@@ -8,15 +8,17 @@ DEVICE_TYPES = {
   },
   "ledcontrol": {
       "get":{},
-      "change_rgb":{
+      "set_color":{
           "color": "rgb"
       },
-      "change_brightness":{
+      "set_brightness":{
           "brightness": "number"
       },
-      "change_toWarm":{},
-      "change_toWhite":{},
-      "change_turnOff":{},
-      "start_animation":{}
+      "white_light":{},
+      "warm_light":{},
+      "turn_off":{},
+      "start_animation":{
+          "animation" : ["static", "RainbowChase", "RainbowCycle", "TheaterChase"]
+      }
   }
 }
