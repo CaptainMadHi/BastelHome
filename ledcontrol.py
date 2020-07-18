@@ -237,13 +237,7 @@ def start_animation(animation):
         animation_thread = threading.Thread(target=theaterChaseRainbow, args=(strip,))
     #TheaterChase
     if animation == "TheaterChase":
-        animation_thread = threading.Thread(target=theaterChase, args=(strip, current_color))
-    #switch to static 
-    else:
-        animation_thread = None
-        current_animation = "static"
-        return{"Animation: " : "static"}   
-    
+        animation_thread = threading.Thread(target=theaterChase, args=(strip, current_color))       
     current_animation = animation
     animation_thread.start()
     return{"Animation: " : current_animation}
