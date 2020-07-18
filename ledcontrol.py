@@ -2,7 +2,7 @@ import time
 from rpi_ws281x import *
 import argparse
 import threading
-import atexit
+#import atexit
 
 # LED strip configuration:
 LED_COUNT      = 60      # Number of LED pixels in use. Change as Necessary.
@@ -39,17 +39,10 @@ strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, 
 # Intialize the library (must be called once before other functions).
 strip.begin()
 
-status = "off" #used for requests
-prevStatus = status
-#                   Status Codes                        #
-#'off'       0-> use when light is turned off| Default  #
-#'on'        1-> use when light is turned on            #
-#'animation' 2-> use when animation is running          #
-
 ####Functions####
-@atexit.register
-def cleanup():
-  colorWipe((strip, Color(0,0,0), 10)) #all needed cleanuo stuff  
+#@atexit.register
+#def cleanup():
+#  colorWipe((strip, Color(0,0,0), 10)) #all needed cleanuo stuff  
 
 def increaseBrightness(stip, amount=1):
     global current_brightness
