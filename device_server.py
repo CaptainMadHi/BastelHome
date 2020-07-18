@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 from importlib import import_module
 import requests
 import sys
@@ -25,6 +25,8 @@ def api_request(command):
   response_data = device_function(**req_json)
   if isinstance(response_data, tuple):
     return Response(response_data[0], mimetype=response_data[1])
+  if isinstance(response_data, dict):
+    return jsonify(response_data)
   return response_data
 
 def setup(main_server, port, device_type, device_name):
