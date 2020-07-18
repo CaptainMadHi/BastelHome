@@ -24,52 +24,61 @@ orange = (255,45,0)
 
 warm = (255, 95, 20) # Natural light
 white = (255,255,255) 
-
+off = (0,0,0)
 #--Global Attributes--#
-currentBrightness = 255 # Default Brightness at Start
-isGRB = True
-rgb = (255,255,255)
-currentColor = rgb
+current_brightness = 255 # Default Brightness at Start
+isGRB             = True
+current_color      = off # Tuple format for RGB values, e.g.: (255,255,255)
+current_animation  = "static"
+animation_thread  = None
+
+
+status = "off" #used for requests
+prevStatus = status
+#                   Status Codes                        #
+#'off'       0-> use when light is turned off| Default  #
+#'on'        1-> use when light is turned on            #
+#'animation' 2-> use when animation is running          #
 
 ####Functions####
 def increaseBrightness(stip, amount=1):
-    global currentBrightness
+    global current_brightness
     
-    if currentBrightness < 255:
-        currentBrightness = currentBrightness+amount
-        strip.setBrightness(currentBrightness)
+    if current_brightness < 255:
+        current_brightness = current_brightness+amount
+        strip.setBrightness(current_brightness)
     else:
         print ('Max brightness reached')
     strip.show()
     time.sleep(0.005)
 
 def decreaseBrightness(stip, amount=1):
-    global currentBrightness
+    global current_brightness
     
-    if currentBrightness > 10:
-        currentBrightness = currentBrightness-amount
-        strip.setBrightness(currentBrightness)
+    if current_brightness > 10:
+        current_brightness = current_brightness-amount
+        strip.setBrightness(current_brightness)
     else:
         print ('Min brightness reached')
     strip.show()
     time.sleep(0.005)
 
 def setBrightness(strip, brightness):           #Überladen, fades into wanted brightness over short period. 
-    global currentBrightness
+    global current_brightness
     
-    if currentBrightness < brightness:
-        for i in range(currentBrightness,brightness):
+    if current_brightness < brightness:
+        for i in range(current_brightness,brightness):
             increaseBrightness(strip)
     
-    if currentBrightness > brightness:
-        for i in range(currentBrightness,brightness,-1):
+    if current_brightness > brightness:
+        for i in range(current_brightness,brightness,-1):
             decreaseBrightness(strip)
     print('Setting Brightness to ', brightness)
     strip.show()
-    currentBrightness=brightness
+    current_brightness=brightness
 
-def setColor(strip, rgb):                             #sets LED-Strip color to input color code
-    global currentBrightness, currentColor, isGRB
+def setColor(strip, rgb):
+    global current_brightness, current_color, isGRB
     r = rgb[0]
     g = rgb[1]
     b = rgb[2]
@@ -82,21 +91,19 @@ def setColor(strip, rgb):                             #sets LED-Strip color to i
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
     strip.show()
-    #setBrightness(strip, currentBrightness)
-    currentColor=rgb
-    #print('Changing color')
+    current_color=rgb
     
 def getColor():
-    global currentColor
-    r = currentColor[0]
-    g = currentColor[1]
-    b = currentColor[2]
+    global current_color
+    r = current_color[0]
+    g = current_color[1]
+    b = current_color[2]
     
     if isGRB:
-     print ('Current color is GRB(',g,',', r,',', b, ')')
+    print ('Current color is GRB(',g,',', r,',', b, ')')
     else:
-     print ('Current color is RGB(',r,',', g,',', b, ')')  
-    return currentColor
+    print ('Current color is RGB(',r,',', g,',', b, ')')  
+    return current_color
     
 ####LED Animation Functions####
 #Selfmade#
@@ -107,22 +114,20 @@ def test1(strip, color, wait_ms=50):
     strip.show()
     time.sleep(0.5)
 
-def cyrcle(strip, color):
-    
-    r = color[0]
-    g = color[1]
-    b = color[2]
-    color = Color(g,r,b)
-   
-    pixels = strip.numPixels()
-   
-    for i in range(0, pixels):
-        strip.setPixelColor(i,color)
-        strip.setPixelColor((i + (pixels/2)),color)
-        
-        strip.setPixelColor(i-1, 0)
-        strip.setPixelColor(i + pixels/2-1,0)
-        strip.show()
+#def cyrcle(strip, color): 
+#    
+#    r = color[0]
+#    g = color[1]
+#    b = color[2]
+#    color = Color(g,r,b)
+#    pixels = strip.numPixels()
+#    for i in range(0, pixels):
+#        strip.setPixelColor(i,color)
+#        strip.setPixelColor((i + (pixels/2)),color)
+#        
+#        strip.setPixelColor(i-1, 0)
+#        strip.setPixelColor(i + pixels/2-1,0)
+#        strip.show()
 
 #Not own made Methods#   
 def colorWipe(strip, color, wait_ms=50):
@@ -195,15 +200,61 @@ def brightnessDemo(strip):
                 time.sleep(1)
                 setBrightness(strip,1)
             
-def incomingRequest():
-    #color request in RGB format
-    setColor()
     
-    #brightness request
-    
-    #animation request
+#--Request Handling--#        
+def get_status():
+    global current_color, current_brightness, current_animation 
+    return {"red": current_color[0], "green": current_color[1], "blue": current_color[2], "brightness": current_brightness, "animation": current_animation} 
 
-# Main program logic follows:
+def change_rgb(rgb, strip=strip):
+    global current_color, current_animation,
+    stop_animation()
+        
+    r = rgb and 0xff0000
+    g = rgb and 0x00ff00
+    b = rgb and 0x0000ff
+    set_color(strip, (r,g,b))
+    return {"RGB": (r,g,b)}
+
+def change_brightness(brightness, strip=strip)
+    if(brightness >= 0 and brightness <= 255):
+        setBrightness(brightness)
+        return{"Brightness" : brightness}
+    else:
+        return{"Wrong Input" : "Brightnesslevel must be between 0-255" }
+
+def change_toWarm(strip=strip):
+    global current_animation, warm
+    stop_animation()
+    set_color(strip, warm)
+    return {"Preset Color": warm }
+
+def change_toWhite(strip=strip):
+    global current_animation, white
+    stop_animation()
+    set_color(strip, white)
+    return {"Preset Color": white }
+
+def change_turnOff(strip=strip):
+    global current_animation, off
+    stop_animation()
+    setColor(off)
+    return{"Turned off: " : "true"}
+
+def start_animation(animation):
+    global current_animation
+    #if animation == "theaterChaseAnimation"
+    animation_thread = threading.Thread(target=self.theaterChaseRainbow, args=(strip))
+    current_animation = "theaterChaseRainbow"
+    return{"Animation: " : current_animation}
+    
+def stop_animation():
+    global current_animation, animation_thread
+    animation_thread.exit()
+    return{"Animation stopped"}
+
+
+# Main program #
 if __name__ == '__main__':
     # Process arguments
     parser = argparse.ArgumentParser()
