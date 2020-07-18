@@ -119,21 +119,6 @@ def test1(strip, color, wait_ms=50):
     strip.show()
     time.sleep(0.5)
 
-#def cyrcle(strip, color): 
-#    
-#    r = color[0]
-#    g = color[1]
-#    b = color[2]
-#    color = Color(g,r,b)
-#    pixels = strip.numPixels()
-#    for i in range(0, pixels):
-#        strip.setPixelColor(i,color)
-#        strip.setPixelColor((i + (pixels/2)),color)
-#        
-#        strip.setPixelColor(i-1, 0)
-#        strip.setPixelColor(i + pixels/2-1,0)
-#        strip.show()
-
 #Not own made Methods#   
 def colorWipe(strip, color, wait_ms=50):
     """Wipe color across display a pixel at a time."""
@@ -170,6 +155,7 @@ def rainbow(strip, wait_ms=20, iterations=1):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((i+j) & 255))
         strip.show()
+        if not getattr(animation_thread, "do_run", True): return
         time.sleep(wait_ms/1000.0)
 
 def rainbowCycle(strip, wait_ms=20, iterations=5):
@@ -178,6 +164,7 @@ def rainbowCycle(strip, wait_ms=20, iterations=5):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels()) + j) & 255))
         strip.show()
+        if not getattr(animation_thread, "do_run", True): return
         time.sleep(wait_ms/1000.0)
 
 def theaterChaseRainbow(strip, wait_ms=50):
@@ -250,12 +237,27 @@ def change_turnOff():
     setColor(strip, off)
     return{"Turned off: " : "true"}
 
-def start_animation():
+def start_animation_theaterChaseRainbow():
     global current_animation, animation_thread
     stop_animation()
-    #if animation == "theaterChaseAnimation"
     animation_thread = threading.Thread(target=theaterChaseRainbow, args=(strip,))
     current_animation = "theaterChaseRainbow"
+    animation_thread.start()
+    return{"Animation: " : current_animation}
+
+def start_animation_rainbowCycle():
+    global current_animation, animation_thread
+    stop_animation()
+    animation_thread = threading.Thread(target=rainbowCycle, args=(strip,))
+    current_animation = "rainbowCycle"
+    animation_thread.start()
+    return{"Animation: " : current_animation}
+
+def start_animation_theaterChase():
+    global current_animation, animation_thread, current_color
+    stop_animation()
+    animation_thread = threading.Thread(target=theaterChase, args=(strip, current_color))
+    current_animation = "theaterChase"
     animation_thread.start()
     return{"Animation: " : current_animation}
     
@@ -296,11 +298,23 @@ if __name__ == '__main__':
             change_toWarm()
             time.sleep(2)
             
-            print("Testing start_animation()")
-            start_animation()
+            print("Testing start_animation_theaterChaseRainbow()")
+            start_animation_theaterChaseRainbow()
             time.sleep(5)
             stop_animation()
+            time.sleep(2)
 
+           # print("Testing start_animation_theaterChase()")
+           # start_animation_theaterChase()
+           # time.sleep(5)
+           # stop_animation()
+           # time.sleep(2)
+
+            print("Testing start_animation_rainbowCycle()")
+            start_animation_rainbowCycle()
+            time.sleep(5)
+            stop_animation()
+            time.sleep(2)
     
     except KeyboardInterrupt:
             stop_animation()
