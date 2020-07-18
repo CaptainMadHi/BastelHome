@@ -215,9 +215,9 @@ def change_rgb(rgb):
     global current_color, current_animation, strip
     stop_animation()
         
-    r = rgb and 0xff0000
+    r = (rgb and 0xff0000) >> 16
     print(r)
-    g = rgb and 0x00ff00
+    g = (rgb and 0x00ff00) >> 8
     print(g)
     b = rgb and 0x0000ff
     print(b)
