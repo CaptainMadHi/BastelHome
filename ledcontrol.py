@@ -271,18 +271,4 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
     args = parser.parse_args()
-    change_brightness(90)
-
-    print ('Press Ctrl-C to quit.')
-    if not args.clear:
-        print('Use "-c" argument to clear LEDs on exit')
-
-    try:
-        t = 0.5
-        while True:
-
-  
-    except Exception:
-            stop_animation()
-            colorWipe(strip, Color(0,0,0), 10)
             
