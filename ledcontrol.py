@@ -137,6 +137,7 @@ def colorWipe(strip, color, wait_ms=50):
 #                strip.setPixelColor(i+q, 0)
 
 def theaterChase(strip, color, wait_ms=50, iterations=10):
+    print("theaterChase")
     while True: #"""Movie theater light style chaser animation."""
         for j in range(iterations):
             for q in range(3):
@@ -248,7 +249,8 @@ def start_animation(animation):
         animation_thread = threading.Thread(target=theaterChaseRainbow, args=(strip,))
     #TheaterChase
     if animation == "TheaterChase":
-        animation_thread = threading.Thread(target=theaterChase, args=(strip, current_color)) 
+        print("TheaterChase was selected")
+        animation_thread = threading.Thread(target=theaterChase, args=(strip,current_color)) 
     if animation == "Static": 
         stop_animation()      
     current_animation = animation
