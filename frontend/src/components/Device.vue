@@ -1,6 +1,6 @@
 <template>
   <b-card :title="deviceTitle">
-    <component :is="pascalCase(deviceType)" :deviceHash="deviceHash"></component>
+    <component ref="getView" :is="pascalCase(deviceType)" :deviceHash="deviceHash"></component>
     <div class="flex-column">
       <Command
         v-for="(value, key) in commands"
@@ -8,6 +8,7 @@
         :name="key"
         :expectedParams="value"
         :deviceHash="deviceHash"
+        @invoke-get="$refs.getView.get()"
       />
     </div>
   </b-card>
@@ -17,11 +18,13 @@
 import { desnakify, pascalCase } from "../utils";
 import Command from "./Command";
 import MockDevice from "./MockDevice";
+import Ledcontrol from "./Ledcontrol";
 export default {
   name: "Device",
   components: {
     Command,
-    MockDevice
+    MockDevice,
+    Ledcontrol
   },
   props: {
     deviceHash: String,

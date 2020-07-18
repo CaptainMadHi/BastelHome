@@ -99,6 +99,7 @@ export default {
           this.name,
           this.params
         );
+        this.$emit("invoke-get");
       } catch (e) {
         this.$bvToast.toast("Couldn't send command", {
           title: "Connection Error",
