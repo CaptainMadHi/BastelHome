@@ -198,15 +198,15 @@ def get():
     global current_color, current_brightness, current_animation 
     return {"red": current_color[0], "green": current_color[1], "blue": current_color[2], "brightness": current_brightness, "animation": current_animation} 
 
-def change_rgb(rgb):
+def change_rgb(color):
     global current_color, current_animation, strip
     stop_animation()
         
-    r = (rgb & 0xff0000) >> 16
+    r = (color & 0xff0000) >> 16
     print(r)
-    g = (rgb & 0x00ff00) >> 8
+    g = (color & 0x00ff00) >> 8
     print(g)
-    b =  rgb & 0x0000ff
+    b =  color & 0x0000ff
     print(b)
     setColor(strip, (r,g,b))
     return{"RGB": (r,g,b)}
