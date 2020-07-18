@@ -164,7 +164,7 @@ def rainbowCycle(strip, wait_ms=20):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels() + j)) & 255))
         strip.show()
-        if j == 255 : j = 0 
+        if j == 255 : j = 1 
         if not getattr(animation_thread, "do_run", True): return
         time.sleep(wait_ms/1000.0)
 
