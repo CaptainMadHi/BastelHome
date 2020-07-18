@@ -259,10 +259,10 @@ def start_animation(animation):
         animation_thread = threading.Thread(target=theaterChaseRainbow, args=(strip,))
     #TheaterChase
     if animation == "TheaterChase":
-        print("TheaterChase was selected")
         animation_thread = threading.Thread(target=theaterChase, args=(strip,current_color)) 
     if animation == "Static": 
-        stop_animation()      
+        stop_animation() 
+        return{"Animation " : current_animation}    
     current_animation = animation
     animation_thread.start()
     return{"Animation: " : current_animation}
