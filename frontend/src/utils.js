@@ -39,9 +39,5 @@ export async function apiCommand(deviceHash, command, jsonPayload) {
     method,
     body: jsonPayload ? JSON.stringify(jsonPayload) : undefined
   };
-  const response = await apiGeneric(url, options);
-  if (!response.ok) {
-    throw new Error(response.statusText);
-  }
-  return response.json();
+  return apiGeneric(url, options);
 }
