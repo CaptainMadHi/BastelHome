@@ -98,7 +98,7 @@ def capturePhoto(): #Take a snapshot and save it with timestamp
 
 @atexit.register
 def cleanup():
-    camera.stop_recording()
+    #camera.stop_recording()
     camera.close()
 #def startMonitor():
 #        camera.start
