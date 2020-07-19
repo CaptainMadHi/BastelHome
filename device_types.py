@@ -20,7 +20,7 @@ DEVICE_TYPES = {
       "start_animation":{
           "animation" : ["Static", "RainbowChase", "RainbowCycle", "TheaterChase"]
       },
-      "set_Led_Count(number)":{
+      "set_led_count":{
           "Number of LEDs": "number"
       }
   },

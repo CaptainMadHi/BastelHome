@@ -276,7 +276,7 @@ def stop_animation():
     current_animation = "static"
     return{"Animation: " : "stopped"}
 
-def set_Led_Count(number):
+def set_led_count(number):
     global LED_COUNT, off, strip 
     stop_animation()
     setColor(strip, off)
