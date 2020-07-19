@@ -171,7 +171,7 @@ def wheel(pos):
 def rainbow(strip, wait_ms=20):
     """Draw rainbow that fades across all pixels at once."""
     while True:
-        for j in range(255)
+        for j in range(255):
             for i in range(strip.numPixels()):
                 strip.setPixelColor(i, wheel((i+j) & 255))
             strip.show()
