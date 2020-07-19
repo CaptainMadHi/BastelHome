@@ -21,7 +21,7 @@ DEVICE_TYPES = {
           "animation" : ["Static", "RainbowChase", "RainbowCycle", "TheaterChase"]
       }
   },
-  "surveillance_camera"{
+  "surveillance_camera":{
       "get":{}
   }
 }
