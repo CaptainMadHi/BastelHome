@@ -1,107 +1,53 @@
-import picamera
+import cv2
 import time
-#import socket
-#import struct
-import io
-#import socketserver
-from threading import Condition
-#from http import server
+from threading import Thread
 import atexit
+import sys
 
-camera = picamera.PiCamera()
-camera.resolution = (1080,720)
-camera.framerate = 30
-#camera.exposure_mode = 'night'
 t = time.strftime("%d.%m.%Y-%H%M%S")
-#---HTML---#
-#----Cam Stuff from https://randomnerdtutorials.com/video-streaming-with-raspberry-pi-camera/----#
-class StreamingOutput(object):
-    def __init__(self):
-        self.frame = None
-        self.buffer = io.BytesIO()
-        self.condition = Condition()
-        
-    def write(self, buf):
-        if buf.startswith(b'\xff\xd8'):
-            # New frame, copy the existing buffer's content and notify all
-            # clients it's available
-            self.buffer.truncate()
-            with self.condition:
-                self.frame = self.buffer.getvalue()
-                self.condition.notify_all()
-            self.buffer.seek(0)
-        return self.buffer.write(buf)
-"""    
-#class StreamingHandler(server.BaseHTTPRequestHandler):
-#    def do_GET(self):
-#        if self.path == '/':
-#            self.send_response(301)
-#            self.send_header('Location', '/index.html')
-#            self.end_headers()
-#        elif self.path == '/index.html':
-#            content = PAGE.encode('utf-8')
-#            self.send_response(200)
-#            self.send_header('Content-Type', 'text/html')
-#            self.send_header('Content-Length', len(content))
-#            self.end_headers()
-#            self.wfile.write(content)
-#        elif self.path == '/stream.mjpg':
-#            self.send_response(200)
-#           self.send_header('Age', 0)
-#           self.send_header('Cache-Control', 'no-cache, private')
-#           self.send_header('Pragma', 'no-cache')
-#           self.send_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
-#           self.end_headers()
-#           try:
-                while True:
-                    with output.condition:
-                        output.condition.wait()
-                        frame = output.frame
-                    self.wfile.write(b'--FRAME\r\n')
-                    self.send_header('Content-Type', 'image/jpeg')
-                    self.send_header('Content-Length', len(frame))
-                    self.end_headers()
-                    self.wfile.write(frame)
-                    self.wfile.write(b'\r\n')
-            except Exception as e:
-                logging.warning(
-                    'Removed streaming client %s: %s',
-                    self.client_address, str(e))
+
+class WebcamVideoStream:
+    def __init__(self, src = 0):
+        print("init")
+        self.stream = cv2.VideoCapture(src)
+        (self.grabbed, self.frame) = self.stream.read()
+        self.stopped = False
+        time.sleep(2.0)
+    
+    def start(self):
+        print("start thread")
+        t = Thread(target=self.update, args=())
+        t.daemon = True
+        t.start()
+        return self
+    
+    def update(self):
+        print("read")
+        while True:
+            if self.stopped:
+                return
+            
+            (self.grabbed, self.frame) = self.stream.read()
+    
+    def read(self):
+        return self.frame
+    
+    def stop(self):
+        self.stopped = True
+
+
+def gen(camera):
+    while True:
+        if camera.stopped:
+            break
+        frame = camera.read()
+        ret, jpeg = cv2.imencode('.jpg',frame)
+        if jpeg is not None:
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n\r\n')
         else:
-            self.send_error(404)
-            self.end_headers()
-"""
-#with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
-
-    #Uncomment the next line to change your Pi's Camera rotation (in degrees)
-    #camera.rotation = 90
-#camera.start_recording(output, format='mjpeg')
-#    try:
-#        address = ('', 8000)
-#        server = StreamingServer(address, StreamingHandler)
-#        server.serve_forever()
-#    finally:
-#        camera.stop_recording()
-
-output = StreamingOutput()
+            print("frame is none")
 
 def get():
-    global output
-    #camera.start_recording('my_video.h264')
-    #camera.wait_recording(5)
-    #camera.stop_recording()
-    camera.start_recording(output, format='mjpeg')
-#----Functions----#
-def capturePhoto(): #Take a snapshot and save it with timestamp
-        t = time.strftime("%d.%m.%Y-%H%M%S")
-        camera.capture(t + '.jpg')
+    return Response(gen(WebcamVideoStream().start())), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@atexit.register
-def cleanup():
-    #camera.stop_recording()
-    camera.close()
-#def startMonitor():
-#        camera.start
-
-if __name__ == "__main__":
-    get()
