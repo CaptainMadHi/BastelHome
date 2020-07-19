@@ -19,6 +19,9 @@ DEVICE_TYPES = {
       "turn_off":{},
       "start_animation":{
           "animation" : ["Static", "RainbowChase", "RainbowCycle", "TheaterChase"]
+      },
+      "set_Led_Count(number)":{
+          "Number of LEDs": "number"
       }
   },
   "surveillance_camera":{

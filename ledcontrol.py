@@ -277,6 +277,12 @@ def stop_animation():
     current_animation = "static"
     return{"Animation: " : "stopped"}
 
+def set_Led_Count(number):
+    global LED_COUNT, off, strip 
+    stop_animation()
+    setColor(strip, off)
+    LED_COUNT = number 
+
 # Main program #
 if __name__ == '__main__':
     # Process arguments
