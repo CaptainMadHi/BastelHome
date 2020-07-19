@@ -1,5 +1,5 @@
 <template>
-  <b-card :title="deviceTitle" class="flex-column">
+  <b-card :title="deviceTitle">
     <component ref="getView" :is="pascalCase(deviceType)" :deviceHash="deviceHash"></component>
     <div class="flex-column">
       <Command

@@ -2,7 +2,7 @@
   <div id="app">
     <b-container style="max-width: 960px;">
       <h1 class="page-header">BastelHome</h1>
-      <div v-if="devices && deviceTypes">
+      <div v-if="devices && deviceTypes" class="flex-column">
         <Device
           v-for="(device, deviceHash) in devices"
           :key="deviceHash"
@@ -109,6 +109,7 @@ h1 {
   flex-shrink: 0;
 }
 
+.card-body > :not(:last-child),
 .flex-column > :not(:last-child) {
   margin-bottom: 1rem;
 }
