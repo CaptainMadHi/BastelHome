@@ -19,12 +19,14 @@ import { desnakify, pascalCase } from "../utils";
 import Command from "./Command";
 import MockDevice from "./MockDevice";
 import Ledcontrol from "./Ledcontrol";
+import SurveillanceCamera from "./SurveillanceCamera";
 export default {
   name: "Device",
   components: {
     Command,
     MockDevice,
-    Ledcontrol
+    Ledcontrol,
+    SurveillanceCamera
   },
   props: {
     deviceHash: String,
