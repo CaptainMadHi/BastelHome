@@ -48,3 +48,4 @@ def get():
 def capturePhoto(): #Take a snapshot and save it with timestamp
         t = time.strftime("%d.%m.%Y-%H%M%S")
         camera.capture(t + '.jpg')
+        return "saved image as" t + "".jpg"
