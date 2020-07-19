@@ -219,7 +219,7 @@ def set_color(color):
     return{"RGB": (r,g,b)}
 
 def set_brightness(brightness):
-    global stop
+
     if(brightness >= 0 and brightness <= 255):
         setBrightness(strip, brightness)
         return{"Brightness" : brightness}
@@ -243,8 +243,6 @@ def turn_off():
     stop_animation()
     setColor(strip, off)
     return{"Turned off: " : "true"}
-#@Me TODO merge into one function 
-#@Me TODO CHANGE FUCKING NAMES
 
 def start_animation(animation):
     global current_animation, animation_thread, current_color
@@ -279,9 +277,14 @@ def stop_animation():
 def set_led_count(number):
     global LED_COUNT, off, strip 
     stop_animation()
+
+    LED_COUNT = number
+    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+    strip.begin()
+
     setColor(strip, off)
-    LED_COUNT = number 
-    return{"Led_Count" :"number"}
+     
+    return{"number" :"number"}
 # Main program #
 if __name__ == '__main__':
     # Process arguments

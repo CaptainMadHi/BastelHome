@@ -19,10 +19,10 @@ DEVICE_TYPES = {
       "turn_off":{},
       "start_animation":{
           "animation" : ["Static", "RainbowChase", "RainbowCycle", "TheaterChase"]
-      }#,
-      #"set_led_count":{
-      #    "number": "number"
-      #}
+      },
+      "set_led_count":{
+          "number": "number"
+      }
   },
   "surveillance_camera":{
       "get":{},
