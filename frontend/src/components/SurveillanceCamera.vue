@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     imgUrl() {
-      return `/api/command/${deviceHash}/get?${cacheBuster}`;
+      return `/api/command/${this.deviceHash}/get?${this.cacheBuster}`;
     }
   },
   methods: {
