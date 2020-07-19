@@ -13,6 +13,8 @@ class WebcamVideoStream:
         self.stream = cv2.VideoCapture(src)
         (self.grabbed, self.frame) = self.stream.read()
         self.stopped = False
+        ret, jpeg = cv2.imencode('.jpg', self.frame) 
+        cv2.imwrite("test.jpeg", jpeg)
         time.sleep(2.0)
     
     def start(self):
@@ -50,7 +52,6 @@ def gen(camera):
             print("frame is none")
 
 stream = WebcamVideoStream()
-
 def get():
     return (gen(stream.start()), 'multipart/x-mixed-replace; boundary=frame')
 
