@@ -171,11 +171,12 @@ def wheel(pos):
 def rainbow(strip, wait_ms=20):
     """Draw rainbow that fades across all pixels at once."""
     while True:
-        for i in range(strip.numPixels()):
-            strip.setPixelColor(i, wheel((i+j) & 255))
-        strip.show()
-        if not getattr(animation_thread, "do_run", True): return
-        time.sleep(wait_ms/1000.0)
+        for j in range(255)
+            for i in range(strip.numPixels()):
+                strip.setPixelColor(i, wheel((i+j) & 255))
+            strip.show()
+            if not getattr(animation_thread, "do_run", True): return
+            time.sleep(wait_ms/1000.0)
 
 def rainbowCycle(strip, wait_ms=20):
     """Draw rainbow that uniformly distributes itself across all pixels."""
