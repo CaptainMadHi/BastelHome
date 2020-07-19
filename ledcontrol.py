@@ -203,8 +203,7 @@ def theaterChaseRainbow(strip, wait_ms=50):
 #--Request Handling--#        
 def get():
     global current_color, current_brightness, current_animation 
-    #@me TODO change red green blue to hex rgb
-    return {"red": current_color[0], "green": current_color[1], "blue": current_color[2], "brightness": current_brightness, "animation": current_animation} 
+    return {"red": current_color[0], "green": current_color[1], "blue": current_color[2], "brightness": current_brightness, "animation": current_animation, "nr_leds": LED_COUNT} 
 
 def set_color(color):
     global current_color, current_animation, strip
@@ -282,7 +281,7 @@ def set_Led_Count(number):
     stop_animation()
     setColor(strip, off)
     LED_COUNT = number 
-
+    return{"Led_Count" :"number"}
 # Main program #
 if __name__ == '__main__':
     # Process arguments
