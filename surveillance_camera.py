@@ -27,7 +27,7 @@ class StreamingOutput(object):
    # def do_GET(self):
 print("üsch setze die cam auf picam")
 camera = picamera.PiCamera()
-camera.resolution = (600,300)
+camera.resolution = (1920,1080)
 camera.framerate = 30
 camera.exposure_mode = 'night'
 t = time.strftime("%d.%m.%Y-%H%M%S")
