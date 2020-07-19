@@ -1,5 +1,5 @@
 <template>
-  <b-img center rounded fluid :src="imgUrl" @load="setTimeout(refreshCacheBuster, 100)"></b-img>
+  <b-img center rounded fluid :src="imgUrl" @load="waitForCacheBuster"></b-img>
 </template>
 <script>
 import { generateCacheBuster } from "../utils";
@@ -19,6 +19,9 @@ export default {
     }
   },
   methods: {
+    waitForCacheBuster() {
+      setTimeout(this.refreshCacheBuster, 50);
+    },
     refreshCacheBuster() {
       this.cacheBuster = generateCacheBuster();
     }
