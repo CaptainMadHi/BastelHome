@@ -18,7 +18,7 @@ DEVICE_TYPES = {
       "warm_light":{},
       "turn_off":{},
       "start_animation":{
-          "animation" : ["Static", "RainbowChase", "RainbowCycle", "TheaterChase"]
+          "animation" : ["Static", "RainbowChase", "RainbowCycle","Rainbow", "TheaterChase"]
       }
   },
   "surveillance_camera":{

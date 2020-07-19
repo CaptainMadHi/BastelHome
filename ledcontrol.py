@@ -255,6 +255,9 @@ def start_animation(animation):
     if animation == "RainbowChase":
         animation_thread = threading.Thread(target=theaterChaseRainbow, args=(strip,))
     #TheaterChase
+    if animation == "Rainbow":
+        animation_thread = threading.Thread(target=rainbow, args=(strip))
+    #TheaterChase
     if animation == "TheaterChase":
         animation_thread = threading.Thread(target=theaterChase, args=(strip,current_color)) 
     #Static (stop_animation)
