@@ -1,57 +1,50 @@
-import cv2
+import picamera
 import time
-from threading import Thread
-#import atexit
-import sys
-from flask import render_template, Response
+import io
+import socketserver
+from threading import Condition
+from http import server
 
+#----Cam Stuff from https://randomnerdtutorials.com/video-streaming-with-raspberry-pi-camera/----#
+class StreamingOutput(object):
+    def __init__(self):
+        self.frame = None
+        self.buffer = io.BytesIO()
+        self.condition = Condition()
+        
+    def write(self, buf):
+        if buf.startswith(b'\xff\xd8'):
+            # New frame, copy the existing buffer's content and notify all
+            # clients it's available
+            self.buffer.truncate()
+            with self.condition:
+                self.frame = self.buffer.getvalue()
+                self.condition.notify_all()
+            self.buffer.seek(0)
+        return self.buffer.write(buf)
+    
+#class StreamingHandler(server.BaseHTTPRequestHandler):
+   # def do_GET(self):
+print("üsch setze die cam auf picam")
+camera = picamera.PiCamera()
+camera.resolution = (600,300)
+camera.framerate = 30
+camera.exposure_mode = 'night'
 t = time.strftime("%d.%m.%Y-%H%M%S")
+output = StreamingOutput()
+#Uncomment the next line to change your Pi's Camera rotation (in degrees)
+camera.rotation = 180
+camera.start_recording(output, format='mjpeg')
+#   finally:
+#       camera.stop_recording()
 
-class WebcamVideoStream:
-    def __init__(self, src = 0):
-        print("init")
-        self.stream = cv2.VideoCapture(src)
-        (self.grabbed, self.frame) = self.stream.read()
-        self.stopped = False
-        ret, jpeg = cv2.imencode('.jpg', self.frame) 
-        cv2.imwrite("test.jpeg", jpeg)
-        time.sleep(2.0)
-    
-    def start(self):
-        print("start thread")
-        t = Thread(target=self.update, args=())
-        t.daemon = True
-        t.start()
-        return self
-    
-    def update(self):
-        print("read")
-        while True:
-            if self.stopped:
-                return
-            
-            (self.grabbed, self.frame) = self.stream.read()
-    
-    def read(self):
-        return self.frame
-    
-    def stop(self):
-        self.stopped = True
-
-
-def gen(camera):
-    while True:
-        if camera.stopped:
-            break
-        frame = camera.read()
-        ret, jpeg = cv2.imencode('.jpg',frame)
-        if jpeg is not None:
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n\r\n')
-        else:
-            print("frame is none")
-
-stream = WebcamVideoStream()
+#----Functions----#
 def get():
-    return (gen(stream.start()), 'multipart/x-mixed-replace; boundary=frame')
+    global output
+    #output.condition.wait()
+    frame = output.frame
+    return frame
 
+def capturePhoto(): #Take a snapshot and save it with timestamp
+        t = time.strftime("%d.%m.%Y-%H%M%S")
+        camera.capture(t + '.jpg')

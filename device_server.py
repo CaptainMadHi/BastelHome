@@ -46,7 +46,7 @@ def setup(main_server, port, device_type, device_name):
 if __name__ == "__main__":
   try:
     setup(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
-    app.run(host="0.0.0.0", port=PORT, debug=True)
+    app.run(host="0.0.0.0", port=PORT, debug=False)
   except IndexError:
     print("Supply main server URL/IP:port, device type and port number")
   except ModuleNotFoundError:

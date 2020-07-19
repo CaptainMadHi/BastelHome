@@ -22,6 +22,7 @@ DEVICE_TYPES = {
       }
   },
   "surveillance_camera":{
-      "get":{}
+      "get":{},
+      "capturePhoto":{}
   }
 }
