@@ -1,4 +1,4 @@
 rpi_ws281x==4.2.4
 flask
 requests
-opencv-python
+opencv-python==3.4.6.27

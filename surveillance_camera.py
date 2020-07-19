@@ -1,9 +1,10 @@
 import cv2
 import time
 from threading import Thread
-import atexit
+#import atexit
 import sys
 from flask import render_template, Response
+
 t = time.strftime("%d.%m.%Y-%H%M%S")
 
 class WebcamVideoStream:
