@@ -3,7 +3,7 @@ import time
 from threading import Thread
 import atexit
 import sys
-
+from flask import render_template, Response
 t = time.strftime("%d.%m.%Y-%H%M%S")
 
 class WebcamVideoStream:
@@ -49,5 +49,5 @@ def gen(camera):
             print("frame is none")
 
 def get():
-    return{Response(gen(WebcamVideoStream().start())), mimetype='multipart/x-mixed-replace; boundary=frame'))}
+    return Response(gen(WebcamVideoStream().start()), mimetype='multipart/x-mixed-replace; boundary=frame')
 
