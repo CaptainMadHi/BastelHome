@@ -1,5 +1,19 @@
 import { capitalize, camelCase, replaceAll } from "voca";
 
+function dec2hex (dec) {
+  return dec < 10
+    ? '0' + String(dec)
+    : dec.toString(16)
+}
+
+// generateId :: Integer -> String
+export function generateCacheBuster (len=10) {
+  var arr = new Uint8Array((len || 40) / 2);
+  window.crypto.getRandomValues(arr);
+  return Array.from(arr, dec2hex).join('');
+}
+
+
 export function pascalCase(str) {
   return capitalize(camelCase(str));
 }
