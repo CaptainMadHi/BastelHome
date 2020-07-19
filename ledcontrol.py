@@ -1,8 +1,7 @@
 import time
 from rpi_ws281x import *
-import argparse
+#import argparse
 import threading
-#import atexit
 
 # LED strip configuration:
 LED_COUNT      = 60      # Number of LED pixels in use. Change as Necessary.
@@ -257,6 +256,7 @@ def start_animation(animation):
     #TheaterChase
     if animation == "TheaterChase":
         animation_thread = threading.Thread(target=theaterChase, args=(strip,current_color)) 
+    #Static (stop_animation)
     if animation == "Static": 
         stop_animation() 
         return{"Animation " : current_animation}    
@@ -284,11 +284,11 @@ def set_led_count(number):
 
     setColor(strip, off)
      
-    return{"number" :"number"}
+    return{"number" : number}
 # Main program #
-if __name__ == '__main__':
-    # Process arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
-    args = parser.parse_args()
+#if __name__ == '__main__':
+#   # Process arguments
+#    parser = argparse.ArgumentParser()
+#    parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
+#    args = parser.parse_args()
             
