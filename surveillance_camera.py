@@ -85,7 +85,7 @@ class StreamingOutput(object):
 
 output = StreamingOutput()
 
-def get()
+def get():
     global output
     camera.start_recording(output, format='mjpeg')
 #----Functions----#
