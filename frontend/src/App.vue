@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <b-container>
+    <b-container style="max-width: 960px;">
       <h1 class="page-header">BastelHome</h1>
       <div v-if="devices && deviceTypes">
         <Device
