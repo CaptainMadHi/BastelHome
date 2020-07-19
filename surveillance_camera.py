@@ -87,10 +87,10 @@ output = StreamingOutput()
 
 def get():
     global output
-    camera.start_recording('my_video.h264')
-    camera.wait_recording(5)
-    camera.stop_recording()
-    #camera.start_recording(output, format='mjpeg')
+    #camera.start_recording('my_video.h264')
+    #camera.wait_recording(5)
+    #camera.stop_recording()
+    camera.start_recording(output, format='mjpeg')
 #----Functions----#
 def capturePhoto(): #Take a snapshot and save it with timestamp
         t = time.strftime("%d.%m.%Y-%H%M%S")
