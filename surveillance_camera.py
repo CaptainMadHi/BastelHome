@@ -87,7 +87,7 @@ output = StreamingOutput()
 
 def get():
     global output
-    camera.start_recording('my_video.mjpeg')
+    camera.start_recording('my_video.h264')
     camera.wait_recording(5)
     camera.stop_recording()
     #camera.start_recording(output, format='mjpeg')
