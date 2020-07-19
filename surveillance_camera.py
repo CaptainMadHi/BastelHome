@@ -6,7 +6,7 @@ import io
 #import socketserver
 from threading import Condition
 #from http import server
-
+import atexit
 
 camera = picamera.PiCamera()
 camera.resolution = (1080,720)
@@ -92,5 +92,10 @@ def get():
 def capturePhoto(): #Take a snapshot and save it with timestamp
         t = time.strftime("%d.%m.%Y-%H%M%S")
         camera.capture(t + '.jpg')
+
+@atexit.register
+def cleanup():
+    camera.stop_recording()
+    camera.close()
 #def startMonitor():
 #        camera.start
