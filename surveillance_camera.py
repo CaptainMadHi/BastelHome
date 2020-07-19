@@ -49,6 +49,8 @@ def gen(camera):
         else:
             print("frame is none")
 
+stream = WebcamVideoStream()
+
 def get():
-    return Response(gen(WebcamVideoStream().start()), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return (gen(stream.start()), 'multipart/x-mixed-replace; boundary=frame')
 
