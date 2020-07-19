@@ -21,7 +21,7 @@ DEVICE_TYPES = {
           "animation" : ["Static", "RainbowChase", "RainbowCycle", "TheaterChase"]
       },
       "set_led_count":{
-          "Number of LEDs": "number"
+          "number": "number"
       }
   },
   "surveillance_camera":{
