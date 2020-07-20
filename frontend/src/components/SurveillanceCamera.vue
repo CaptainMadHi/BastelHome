@@ -20,7 +20,7 @@ export default {
   },
   methods: {
     waitForCacheBuster() {
-      setTimeout(this.refreshCacheBuster, 50);
+      setTimeout(this.refreshCacheBuster, 10);
     },
     refreshCacheBuster() {
       this.cacheBuster = generateCacheBuster();
