@@ -279,17 +279,6 @@ def stop_animation():
     current_animation = "static"
     return{"Animation: " : "stopped"}
 
-def set_led_count(number):
-    global LED_COUNT, off, strip 
-    stop_animation()
-
-    LED_COUNT = number
-    strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-    strip.begin()
-
-    setColor(strip, off)
-     
-    return{"number" : number}
 # Main program #
 #if __name__ == '__main__':
 #   # Process arguments
