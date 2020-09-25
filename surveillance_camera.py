@@ -38,7 +38,7 @@ def get():
     frame = output.frame
     return frame
 
-def capturePhoto(): #Take a snapshot and save it with timestamp
+def capture_photo(): #Take a snapshot and save it with timestamp
         t = time.strftime("%d.%m.%Y-%H%M%S")
         camera.capture(t + '.jpg')
         return "saved image"
